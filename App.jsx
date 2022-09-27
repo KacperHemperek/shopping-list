@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import styled, { ThemeProvider } from "styled-components";
 import Login from "./src/screens/Login";
+import { MyText } from "./src/styled/MyText";
 import { supabase } from "./supabaseClient";
 
 const theme = {
@@ -19,7 +20,6 @@ const AppWrapper = ({ children }) => {
 
 export default function App() {
     const [session, setSession] = useState(null);
-
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
@@ -32,7 +32,15 @@ export default function App() {
 
     return (
         <AppWrapper>
-            <Wrapper>{session ? <Text>account</Text> : <Login />}</Wrapper>
+            <Wrapper>
+                {session ? (
+                    <MyText>
+                        <TouchableOpacity>Log Out</TouchableOpacity>
+                    </MyText>
+                ) : (
+                    <Login />
+                )}
+            </Wrapper>
         </AppWrapper>
     );
 }

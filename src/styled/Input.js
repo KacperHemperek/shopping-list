@@ -8,7 +8,4 @@ export const Input = styled.TextInput`
     width: 100%;
     font-size: 16px;
     margin-bottom: 16px;
-    &::placeholder {
-        color: gray;
-    }
 `;

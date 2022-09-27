@@ -5,11 +5,13 @@ import { REACT_APP_SUPABASE_ANON_KEY, REACT_APP_SUPABASE_URL } from "@env";
 
 setupURLPolyfill();
 
-const url = REACT_APP_SUPABASE_URL;
-const anonKey = REACT_APP_SUPABASE_ANON_KEY;
-export const supabase = createClient(url, anonKey, {
-    auth: {
-        detectSessionInUrl: false,
-        storage: AsyncStorage,
-    },
-});
+export const supabase = createClient(
+    REACT_APP_SUPABASE_URL,
+    REACT_APP_SUPABASE_ANON_KEY,
+    {
+        auth: {
+            detectSessionInUrl: false,
+            storage: AsyncStorage,
+        },
+    }
+);
