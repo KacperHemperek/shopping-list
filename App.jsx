@@ -1,8 +1,10 @@
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity } from "react-native";
-import styled, { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components";
+import Home from "./src/screens/Home";
 import Login from "./src/screens/Login";
-import { MyText } from "./src/styled/MyText";
+import Signup from "./src/screens/Signup";
 import { supabase } from "./supabaseClient";
 
 const theme = {
@@ -15,8 +17,14 @@ const theme = {
 };
 
 const AppWrapper = ({ children }) => {
-    return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+    return (
+        <NavigationContainer>
+            <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        </NavigationContainer>
+    );
 };
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
     const [session, setSession] = useState(null);
@@ -32,23 +40,16 @@ export default function App() {
 
     return (
         <AppWrapper>
-            <Wrapper>
-                {session ? (
-                    <MyText>
-                        <TouchableOpacity>Log Out</TouchableOpacity>
-                    </MyText>
-                ) : (
-                    <Login />
-                )}
-            </Wrapper>
+            {session ? (
+                <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="Home" component={Home} />
+                </Stack.Navigator>
+            ) : (
+                <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="LogIn" component={Login} />
+                    <Stack.Screen name="SignUp" component={Signup} />
+                </Stack.Navigator>
+            )}
         </AppWrapper>
     );
 }
-
-const Wrapper = styled.View`
-    flex: 1;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    background-color: ${({ theme }) => theme.colors.darkBlue};
-`;

@@ -1,8 +1,8 @@
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Alert } from "react-native";
-import Checkbox from "../components/Checkbox";
-import { logIn } from "../helpers/Auth";
+import { Alert, Platform, View } from "react-native";
+import { Input } from "../styled/Input";
+import { supabase } from "../../supabaseClient";
+import { ScreenWrapper } from "../styled/ScreenWrapper";
 import {
     FormButton,
     FormButtonGroup,
@@ -10,39 +10,44 @@ import {
     FormLink,
     FormText,
     FormTitle,
+    FormWrapper,
     InputGroup,
 } from "../styled/FormElements";
-import { Input } from "../styled/Input";
-import { ScreenWrapper } from "../styled/ScreenWrapper";
+import { useNavigation } from "@react-navigation/native";
+import Checkbox from "../components/Checkbox";
+import { signUp } from "../helpers/Auth";
 
-const Login = () => {
-    const [password, setPassword] = useState("");
+const Signup = () => {
     const [email, setEmail] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState("");
+    const [confirm, setConfirm] = useState("");
+    const [name, setName] = useState("");
+
+    const [showPassword, setShowPassword] = useState(null);
 
     const navigation = useNavigation();
 
     async function handleLogIn() {
         try {
-            await logIn(email, password);
+            await signUp(email, password, confirm, name);
         } catch (error) {
             Alert.alert(
                 error.name,
-                String(error.message).replace("AuthApiError: ", "")
+                error.message.replace("AuthApiError: ", "")
             );
             setPassword("");
+            setConfirm("");
         }
     }
 
-    const keyboardVerticalOffset = Platform.OS === "ios" ? 40 : 0;
-
+    const keyboardVerticalOffset = Platform.OS === "ios" ? 20 : 0;
     return (
         <ScreenWrapper verticalCenter horizontalCenter>
             <InputGroup
-                behavior={Platform.OS === "ios" ? "position" : null}
+                behavior={Platform.OS === "ios" ? "position" : ""}
                 keyboardVerticalOffset={keyboardVerticalOffset}
             >
-                <FormTitle>Log In</FormTitle>
+                <FormTitle>Sign Up</FormTitle>
                 <Input
                     keyboardType="email-address"
                     placeholder="email"
@@ -50,12 +55,27 @@ const Login = () => {
                     onChangeText={setEmail}
                 />
                 <Input
+                    keyboardType="email-address"
+                    placeholder="username"
+                    value={name}
+                    onChangeText={setName}
+                />
+
+                <Input
                     keyboardType="default"
                     secureTextEntry={!showPassword}
                     placeholder="password"
                     value={password}
                     onChangeText={setPassword}
                 />
+                <Input
+                    keyboardType="default"
+                    secureTextEntry={!showPassword}
+                    placeholder="confirm password"
+                    value={confirm}
+                    onChangeText={setConfirm}
+                />
+
                 <FormCheckboxWrapper>
                     <Checkbox
                         checked={showPassword}
@@ -65,20 +85,15 @@ const Login = () => {
                 </FormCheckboxWrapper>
             </InputGroup>
             <FormButtonGroup>
-                <FormLink
-                    onPress={() => {
-                        navigation.navigate("SignUp");
-                    }}
-                >
-                    Don't have an account? Sign Up
+                <FormLink onPress={() => navigation.navigate("LogIn")}>
+                    Already have an account? Log in!
                 </FormLink>
-
                 <FormButton onPress={handleLogIn}>
-                    <FormText>Log In</FormText>
+                    <FormText>Sign Up</FormText>
                 </FormButton>
             </FormButtonGroup>
         </ScreenWrapper>
     );
 };
 
-export default Login;
+export default Signup;
