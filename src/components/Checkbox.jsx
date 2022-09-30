@@ -7,6 +7,8 @@ const Checkbox = ({
     label,
     style = {},
     textDecoration = false,
+    disableBuiltInState = false,
+    removeAnimation = false,
 }) => {
     const textStyle = textDecoration
         ? {
@@ -18,6 +20,7 @@ const Checkbox = ({
           };
     return (
         <BouncyCheckbox
+            disableBuiltInState={disableBuiltInState}
             style={style}
             isChecked={checked}
             onPress={setChecked}
@@ -30,6 +33,11 @@ const Checkbox = ({
             iconStyle={{
                 borderRadius: 4,
             }}
+            bounceVelocityIn={removeAnimation ? 0 : 0.1}
+            bounceVelocityOut={removeAnimation ? 0 : 0.4}
+            bouncinessIn={removeAnimation ? 0 : 20}
+            bounceEffectIn={removeAnimation ? 1 : 0.9}
+            bouncinessOut={removeAnimation ? 0 : 20}
         />
     );
 };

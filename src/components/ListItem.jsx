@@ -1,37 +1,49 @@
-import { View } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
 import { MyText } from "../styled/MyText";
+import { Platform } from "react-native";
 
-const ListItem = ({ id, description, checked, amount }) => {
-    const [localCheck, setLocalCheck] = useState(checked);
-
+const ListItem = ({ description, checked, amount, setChecked }) => {
     return (
-        <ItemWrapper
-            onPress={() => {
-                setLocalCheck((prev) => !prev);
-            }}
-        >
-            <Checkbox
-                label={description}
-                checked={localCheck}
-                setChecked={() => setLocalCheck((prev) => !prev)}
-                textDecoration={true}
-            />
-            <Amount>{amount}</Amount>
+        <ItemWrapper onPress={setChecked}>
+            <ItemBody>
+                <Checkbox
+                    label={description}
+                    checked={checked}
+                    setChecked={setChecked}
+                    disableBuiltInState={true}
+                    removeAnimation={true}
+                />
+                <Amount>{amount}</Amount>
+                <Line checked={checked} />
+            </ItemBody>
         </ItemWrapper>
     );
 };
 
-const ItemWrapper = styled.TouchableOpacity`
-    border-bottom-width: 1px;
-    border-color: ${({ theme }) => theme.colors.lightBlue};
-    border-collapse: collapse;
-    padding: 10px 7px;
-    flex-direction: row;
+const Line = styled.View`
+    width: ${Platform.OS === "android" ? "89%" : "88%"};
+    position: absolute;
+    height: 1px;
+    top: 23px;
+    right: 8px;
+    background-color: ${({ theme }) => theme.colors.text};
+    display: ${(props) => (props.checked ? "flex" : "none")};
+`;
+
+const ItemBody = styled.View`
+    position: relative;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
+    flex-direction: row;
+    padding: 10px 7px;
+`;
+
+const ItemWrapper = styled.TouchableWithoutFeedback`
+    border-collapse: collapse;
+    flex-direction: row;
 `;
 
 const Amount = styled(MyText)`
