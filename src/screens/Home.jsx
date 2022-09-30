@@ -7,6 +7,7 @@ import { SafeArea } from "../styled/SafeArea";
 import ListItem from "../components/ListItem";
 import { Input } from "../styled/Input";
 import { PlusSmallIcon, TrashIcon } from "react-native-heroicons/solid";
+import { Alert } from "react-native";
 
 const Home = () => {
     const [userName, setUserName] = useState("");
@@ -31,13 +32,19 @@ const Home = () => {
                     .user_metadata.username;
 
                 setUserName(response);
-            } catch (error) {}
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         fetchUser();
     }, []);
 
     function addListItem() {
+        if (!desc || !amount) {
+            Alert.alert();
+        }
+
         console.log(items);
         const id = Math.floor(Math.random() * 1000);
         const newItem = { id, description: desc, amount, checked: false };
@@ -164,12 +171,16 @@ const LogoutButton = styled.TouchableOpacity`
 const ButtonText = styled(MyText)`
     font-weight: 700;
 `;
+const ListWrapper = styled.View`
+    padding-right: 16px;
+    padding-left: 16px;
+`;
 
-const ListWrapper = styled.ScrollView.attrs((props) => ({
-    contentContainerStyle: {
-        padding: 16,
-        paddingBottom: 80,
-    },
-}))``;
+// const ListWrapper = styled.ScrollView.attrs((props) => ({
+//     contentContainerStyle: {
+//         padding: 16,
+//         // paddingBottom: 80,
+//     },
+// }))``;
 
 export default Home;
