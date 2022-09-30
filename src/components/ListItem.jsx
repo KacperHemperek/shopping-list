@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Checkbox from "./Checkbox";
 import { MyText } from "../styled/MyText";

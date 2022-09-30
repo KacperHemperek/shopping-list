@@ -42,7 +42,11 @@ const Home = () => {
 
     function addListItem() {
         if (!desc || !amount) {
-            Alert.alert();
+            Alert.alert(
+                "Cannot add empty list item",
+                "Both item description and amount must be provided"
+            );
+            return;
         }
 
         console.log(items);
@@ -171,16 +175,12 @@ const LogoutButton = styled.TouchableOpacity`
 const ButtonText = styled(MyText)`
     font-weight: 700;
 `;
-const ListWrapper = styled.View`
-    padding-right: 16px;
-    padding-left: 16px;
-`;
 
-// const ListWrapper = styled.ScrollView.attrs((props) => ({
-//     contentContainerStyle: {
-//         padding: 16,
-//         // paddingBottom: 80,
-//     },
-// }))``;
+const ListWrapper = styled.ScrollView.attrs((props) => ({
+    contentContainerStyle: {
+        padding: 16,
+        paddingBottom: 80,
+    },
+}))``;
 
 export default Home;
