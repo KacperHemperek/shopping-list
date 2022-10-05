@@ -26,6 +26,8 @@ const Home = () => {
     }
 
     useEffect(() => {
+        let itemsSub;
+
         async function fetchUser() {
             try {
                 const response = (await supabase.auth.getUser()).data.user
@@ -37,10 +39,66 @@ const Home = () => {
             }
         }
 
+        async function fetchItems() {
+            let userId = (await supabase.auth.getUser()).data.user.id;
+
+            try {
+                const { data, error } = await supabase
+                    .from("items")
+                    .select("*")
+                    .eq("creator_id", userId);
+                setItems([...data]);
+            } catch (error) {}
+        }
+        async function setupSubscription() {
+            let userId = (await supabase.auth.getUser()).data.user.id;
+
+            supabase
+                .channel(`public:items:creator_id=eq.${userId}`)
+                .on(
+                    "postgres_changes",
+                    { event: "INSERT", schema: "public", table: "items" },
+                    (payload) => {
+                        setItems([...items, payload.new]);
+                    }
+                )
+                .subscribe();
+            supabase
+                .channel(`public:items:creator_id=eq.${userId}`)
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "UPDATE",
+                        schema: "public",
+                        table: "items",
+                    },
+                    (payload) => {
+                        console.log(payload.new);
+                        // console.log(payload.new);
+                        // const updatedItems = items.map((item) => {
+                        // if (item.id === payload.new.id) {
+                        //     console.log({
+                        //         item_from_array: item,
+                        //         new_item: payload.new,
+                        //     });
+                        // }
+                        //     return item.id === payload.new.id
+                        //         ? payload.new
+                        //         : item;
+                        // });
+                        // console.log(updatedItems);
+                        // setItems([...updatedItems]);
+                    }
+                )
+                .subscribe();
+        }
+
         fetchUser();
+        setupSubscription();
+        fetchItems();
     }, []);
 
-    function addListItem() {
+    async function addListItem() {
         if (!desc || !amount) {
             Alert.alert(
                 "Cannot add empty list item",
@@ -49,19 +107,39 @@ const Home = () => {
             return;
         }
 
-        console.log(items);
-        const id = Math.floor(Math.random() * 1000);
-        const newItem = { id, description: desc, amount, checked: false };
-        setItems([...items, newItem]);
+        try {
+            const id = (await supabase.auth.getUser()).data.user.id;
+
+            const { error } = await supabase
+                .from("items")
+                .insert({ desc, amount, checked: false, creator_id: id });
+
+            if (error) {
+                console.error(error);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
         setDesc("");
         setAmount("");
     }
 
-    function setChecked(id) {
-        const newArray = items.map((item) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
-        );
-        setItems(newArray);
+    async function setChecked(id, checked) {
+        // const newArray = items.map((item) =>
+        //     item.id === id ? { ...item, checked: !item.checked } : item
+        // );
+        console.log("click");
+
+        const { error } = await supabase
+            .from("items")
+            .update({ checked: !checked })
+            .eq("id", id)
+            .select("*");
+
+        if (error) {
+            console.error(error);
+        }
     }
 
     function deleteChecked() {
@@ -74,7 +152,7 @@ const Home = () => {
             <ListItem
                 key={item.id}
                 {...item}
-                setChecked={() => setChecked(item.id)}
+                setChecked={() => setChecked(item.id, item.checked)}
             />
         ));
     }

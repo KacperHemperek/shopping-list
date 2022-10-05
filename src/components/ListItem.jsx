@@ -4,12 +4,12 @@ import Checkbox from "./Checkbox";
 import { MyText } from "../styled/MyText";
 import { Platform } from "react-native";
 
-const ListItem = ({ description, checked, amount, setChecked }) => {
+const ListItem = ({ desc, checked, amount, setChecked }) => {
     return (
         <ItemWrapper onPress={setChecked}>
             <ItemBody>
                 <Checkbox
-                    label={description}
+                    label={desc}
                     checked={checked}
                     setChecked={setChecked}
                     disableBuiltInState={true}
