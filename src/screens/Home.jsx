@@ -8,13 +8,14 @@ import ListItem from "../components/ListItem";
 import { Input } from "../styled/Input";
 import { PlusSmallIcon, TrashIcon } from "react-native-heroicons/solid";
 import { Alert } from "react-native";
+import useItemList from "../hooks/useItemsList";
 
 const Home = () => {
     const [userName, setUserName] = useState("");
-    const [desc, setDesc] = useState("");
-    const [amount, setAmount] = useState("");
+    // const [desc, setDesc] = useState("");
+    // const [amount, setAmount] = useState("");
 
-    const [items, setItems] = useState([]);
+    // const [items, setItems] = useState([]);
 
     async function handleLogOut() {
         try {
@@ -26,8 +27,6 @@ const Home = () => {
     }
 
     useEffect(() => {
-        let itemsSub;
-
         async function fetchUser() {
             try {
                 const response = (await supabase.auth.getUser()).data.user
@@ -38,114 +37,145 @@ const Home = () => {
                 console.error(error);
             }
         }
-
-        async function fetchItems() {
-            let userId = (await supabase.auth.getUser()).data.user.id;
-
-            try {
-                const { data, error } = await supabase
-                    .from("items")
-                    .select("*")
-                    .eq("creator_id", userId);
-                setItems([...data]);
-            } catch (error) {}
-        }
-        async function setupSubscription() {
-            let userId = (await supabase.auth.getUser()).data.user.id;
-
-            supabase
-                .channel(`public:items:creator_id=eq.${userId}`)
-                .on(
-                    "postgres_changes",
-                    { event: "INSERT", schema: "public", table: "items" },
-                    (payload) => {
-                        setItems([...items, payload.new]);
-                    }
-                )
-                .subscribe();
-            supabase
-                .channel(`public:items:creator_id=eq.${userId}`)
-                .on(
-                    "postgres_changes",
-                    {
-                        event: "UPDATE",
-                        schema: "public",
-                        table: "items",
-                    },
-                    (payload) => {
-                        console.log(payload.new);
-                        // console.log(payload.new);
-                        // const updatedItems = items.map((item) => {
-                        // if (item.id === payload.new.id) {
-                        //     console.log({
-                        //         item_from_array: item,
-                        //         new_item: payload.new,
-                        //     });
-                        // }
-                        //     return item.id === payload.new.id
-                        //         ? payload.new
-                        //         : item;
-                        // });
-                        // console.log(updatedItems);
-                        // setItems([...updatedItems]);
-                    }
-                )
-                .subscribe();
-        }
-
         fetchUser();
-        setupSubscription();
-        fetchItems();
     }, []);
 
-    async function addListItem() {
-        if (!desc || !amount) {
-            Alert.alert(
-                "Cannot add empty list item",
-                "Both item description and amount must be provided"
-            );
-            return;
-        }
+    //     async function fetchItems() {
+    //         let userId = (await supabase.auth.getUser()).data.user.id;
 
-        try {
-            const id = (await supabase.auth.getUser()).data.user.id;
+    //         try {
+    //             const { data, error } = await supabase
+    //                 .from("items")
+    //                 .select("*")
+    //                 .eq("creator_id", userId);
 
-            const { error } = await supabase
-                .from("items")
-                .insert({ desc, amount, checked: false, creator_id: id });
+    //             const date = new Date(data[0].created_at);
+    //             console.log(Number(date));
 
-            if (error) {
-                console.error(error);
-            }
-        } catch (error) {
-            console.error(error);
-        }
+    //             setItems(
+    //                 data.sort(
+    //                     (a, b) =>
+    //                         Number(new Date(a.created_at)) -
+    //                         Number(new Date(b.created_at))
+    //                 )
+    //             );
+    //             if (error) {
+    //                 console.error(error);
+    //             }
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     }
+    //     async function setupSubscription() {
+    //         let userId = (await supabase.auth.getUser()).data.user.id;
 
-        setDesc("");
-        setAmount("");
-    }
+    //         supabase
+    //             .channel(`public:items:creator_id=eq.${userId}`)
+    //             .on(
+    //                 "postgres_changes",
+    //                 {
+    //                     event: "INSERT",
+    //                     schema: "public",
+    //                     table: "items",
+    //                 },
+    //                 (payload) => {
+    //                     setItems((prevArray) => [...prevArray, payload.new]);
+    //                 }
+    //             )
+    //             .on(
+    //                 "postgres_changes",
+    //                 {
+    //                     event: "DELETE",
+    //                     schema: "public",
+    //                     table: "items",
+    //                 },
+    //                 (payload) => {
+    //                     console.log(payload);
+    //                     setItems((prevArray) =>
+    //                         prevArray.filter(
+    //                             (item) => item.id !== payload.old.id
+    //                         )
+    //                     );
+    //                 }
+    //             )
+    //             .subscribe();
+    //     }
 
-    async function setChecked(id, checked) {
-        // const newArray = items.map((item) =>
-        //     item.id === id ? { ...item, checked: !item.checked } : item
-        // );
-        console.log("click");
+    //     setupSubscription();
+    //     fetchUser();
+    //     fetchItems();
+    // }, []);
 
-        const { error } = await supabase
-            .from("items")
-            .update({ checked: !checked })
-            .eq("id", id)
-            .select("*");
+    // async function addListItem() {
+    //     if (!desc || !amount) {
+    //         Alert.alert(
+    //             "Cannot add empty list item",
+    //             "Both item description and amount must be provided"
+    //         );
+    //         return;
+    //     }
 
-        if (error) {
-            console.error(error);
-        }
-    }
+    //     try {
+    //         const id = (await supabase.auth.getUser()).data.user.id;
 
-    function deleteChecked() {
-        const newArray = items.filter((item) => !item.checked);
-        setItems(newArray);
-    }
+    //         const { error } = await supabase
+    //             .from("items")
+    //             .insert({ desc, amount, checked: false, creator_id: id });
+
+    //         if (error) {
+    //             console.error(error);
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+
+    //     setDesc("");
+    //     setAmount("");
+    // }
+
+    // async function setChecked(id, checked) {
+    //     const { error } = await supabase
+    //         .from("items")
+    //         .update({ checked: !checked })
+    //         .eq("id", id)
+    //         .select("*");
+
+    //     if (!error) {
+    //         setItems((prevArray) =>
+    //             prevArray.map((item) =>
+    //                 item.id === id ? { ...item, checked: !item.checked } : item
+    //             )
+    //         );
+    //     } else {
+    //         console.error(error);
+    //     }
+    // }
+
+    // async function deleteChecked() {
+    //     try {
+    //         const ids = items
+    //             .filter((item) => item.checked)
+    //             .map((item) => item.id);
+    //         console.log(ids);
+    //         await supabase.from("items").delete().in("id", ids);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+
+    //     // const newArray = items.filter((item) => !item.checked);
+    //     // setItems(newArray);
+    // }
+
+    const {
+        addListItem,
+        amount,
+        deleteChecked,
+        desc,
+        setAmount,
+        setChecked,
+        setDesc,
+        items,
+    } = useItemList();
 
     function renderList() {
         return items.map((item) => (
