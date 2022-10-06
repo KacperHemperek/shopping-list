@@ -17,9 +17,6 @@ function useItemList() {
                     .select("*")
                     .eq("creator_id", userId);
 
-                const date = new Date(data[0].created_at);
-                console.log(Number(date));
-
                 setItems(
                     data.sort(
                         (a, b) =>
@@ -31,7 +28,7 @@ function useItemList() {
                     console.error(error);
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         }
         async function setupSubscription() {
@@ -58,7 +55,6 @@ function useItemList() {
                         table: "items",
                     },
                     (payload) => {
-                        console.log(payload);
                         setItems((prevArray) =>
                             prevArray.filter(
                                 (item) => item.id !== payload.old.id
@@ -123,14 +119,10 @@ function useItemList() {
             const ids = items
                 .filter((item) => item.checked)
                 .map((item) => item.id);
-            console.log(ids);
             await supabase.from("items").delete().in("id", ids);
         } catch (error) {
             console.error(error);
         }
-
-        // const newArray = items.filter((item) => !item.checked);
-        // setItems(newArray);
     }
     return {
         deleteChecked,

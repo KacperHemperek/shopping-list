@@ -21,6 +21,17 @@ const Home = () => {
             throw error;
         }
     }
+    
+    const {
+        addListItem,
+        amount,
+        deleteChecked,
+        desc,
+        setAmount,
+        setChecked,
+        setDesc,
+        items,
+    } = useItemList();
 
     useEffect(() => {
         async function fetchUser() {
@@ -35,17 +46,6 @@ const Home = () => {
         }
         fetchUser();
     }, []);
-
-    const {
-        addListItem,
-        amount,
-        deleteChecked,
-        desc,
-        setAmount,
-        setChecked,
-        setDesc,
-        items,
-    } = useItemList();
 
     function renderList() {
         return items.map((item) => (
