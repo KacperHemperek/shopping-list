@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
-import { MyText } from "../styled/MyText";
-import { supabase } from "../../supabaseClient";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { SafeArea } from "../styled/SafeArea";
 import ListItem from "../components/ListItem";
 import { Input } from "../styled/Input";
 import { PlusSmallIcon, TrashIcon } from "react-native-heroicons/solid";
 import useItemList from "../hooks/useItemsList";
+import { Header, HeaderTitle } from "../styled/Header";
+import useUser from "../hooks/useUser";
+import BackButton from "../components/BackButton";
+import { ListWrapper } from "../styled/ListWrapper";
 
 const List = () => {
-    const [userName, setUserName] = useState("");
-
-    async function handleLogOut() {
-        try {
-            supabase.auth.signOut();
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
+    const { userName } = useUser();
 
     const {
         addListItem,
@@ -32,20 +25,6 @@ const List = () => {
         items,
     } = useItemList();
 
-    useEffect(() => {
-        async function fetchUser() {
-            try {
-                const response = (await supabase.auth.getUser()).data.user
-                    .user_metadata.username;
-
-                setUserName(response);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        fetchUser();
-    }, []);
-
     function renderList() {
         return items.map((item) => (
             <ListItem
@@ -55,14 +34,15 @@ const List = () => {
             />
         ));
     }
+
+    const theme = useTheme();
+
     return (
         <ScreenWrapper>
             <SafeArea>
                 <Header>
-                    <Title>{userName}'s List</Title>
-                    <LogoutButton onPress={handleLogOut}>
-                        <ButtonText>Log Out</ButtonText>
-                    </LogoutButton>
+                    <BackButton destination="Home" />
+                    <HeaderTitle>{userName}'s List</HeaderTitle>
                 </Header>
                 <InputWrapper>
                     <CustomInput
@@ -79,7 +59,7 @@ const List = () => {
                     />
                     <IconWrapper onPress={addListItem}>
                         <PlusSmallIcon
-                            color="#E7F6F2"
+                            color={theme.colors.text}
                             size={24}
                             fontWeight={800}
                         />
@@ -87,7 +67,7 @@ const List = () => {
                 </InputWrapper>
                 <ListWrapper>{renderList()}</ListWrapper>
                 <FloatingButton onPress={deleteChecked}>
-                    <TrashIcon size={30} color="#E7F6F2" />
+                    <TrashIcon size={30} color={theme.colors.text} />
                 </FloatingButton>
             </SafeArea>
         </ScreenWrapper>
@@ -132,32 +112,5 @@ const InputWrapper = styled.View`
     height: 60px;
     margin-top: 8px;
 `;
-
-const Title = styled(MyText)`
-    font-size: 26px;
-`;
-
-const Header = styled.View`
-    flex-direction: row;
-    align-items: center;
-    padding: 16px;
-    justify-content: space-between;
-`;
-
-const LogoutButton = styled.TouchableOpacity`
-    padding: 6px 12px;
-    background-color: ${({ theme }) => theme.colors.blue};
-    border-radius: 4px;
-`;
-const ButtonText = styled(MyText)`
-    font-weight: 700;
-`;
-
-const ListWrapper = styled.ScrollView.attrs((props) => ({
-    contentContainerStyle: {
-        padding: 16,
-        paddingBottom: 80,
-    },
-}))``;
 
 export default List;

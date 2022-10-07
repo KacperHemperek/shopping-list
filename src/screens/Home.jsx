@@ -5,23 +5,47 @@ import { MyText } from "../styled/MyText";
 import styled from "styled-components";
 import { SafeArea } from "../styled/SafeArea";
 import { Input } from "../styled/Input";
+import { PlusSmallIcon } from "react-native-heroicons/solid";
+import { Header, HeaderTitle } from "../styled/Header";
+import useUser from "../hooks/useUser";
 
 const Home = () => {
+    const { userName, handleLogOut } = useUser();
+
     return (
         <ScreenWrapper horizontalCenter>
             <SafeArea>
+                <Header justifyBetween>
+                    <HeaderTitle>Your Lists</HeaderTitle>
+                    <LogoutButton onPress={handleLogOut}>
+                        <ButtonText>Log Out</ButtonText>
+                    </LogoutButton>
+                </Header>
                 <NewListWrapper>
                     <NewListInput placeholder="new list name" />
-                    <ButtonWrapper>
-                        <Button>
-                            <MyText>+</MyText>
-                        </Button>
-                    </ButtonWrapper>
+
+                    <Button>
+                        <PlusSmallIcon
+                            color="#E7F6F2"
+                            size={24}
+                            fontWeight={800}
+                        />
+                    </Button>
                 </NewListWrapper>
             </SafeArea>
         </ScreenWrapper>
     );
 };
+
+const LogoutButton = styled.TouchableOpacity`
+    padding: 6px 12px;
+    background-color: ${({ theme }) => theme.colors.blue};
+    border-radius: 4px;
+`;
+
+const ButtonText = styled(MyText)`
+    font-weight: 700;
+`;
 
 const Button = styled.TouchableOpacity`
     background-color: ${({ theme }) => theme.colors.lightBlue};
@@ -30,12 +54,7 @@ const Button = styled.TouchableOpacity`
     justify-content: center;
     align-items: center;
     border-radius: 400px;
-`;
-
-const ButtonWrapper = styled.View`
-    justify-content: center;
-    align-items: flex-end;
-    flex: 1;
+    margin-left: 16px;
 `;
 
 const NewListInput = styled(Input)`
@@ -45,6 +64,7 @@ const NewListInput = styled(Input)`
 `;
 
 const NewListWrapper = styled.KeyboardAvoidingView`
+    align-items: center;
     flex-direction: row;
     bottom: 0;
     width: 100%;
