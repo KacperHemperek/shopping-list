@@ -15,6 +15,8 @@ import {
 import { Input } from "../styled/Input";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
 
+const keyboardVerticalOffset = Platform.OS === "ios" ? 40 : 0;
+
 const Login = () => {
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -33,8 +35,6 @@ const Login = () => {
             setPassword("");
         }
     }
-
-    const keyboardVerticalOffset = Platform.OS === "ios" ? 40 : 0;
 
     return (
         <ScreenWrapper verticalCenter horizontalCenter>

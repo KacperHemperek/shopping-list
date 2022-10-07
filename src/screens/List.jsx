@@ -27,6 +27,8 @@ const List = () => {
         error: itemsError,
     } = useItemList();
 
+    const theme = useTheme();
+
     function renderList() {
         return items.map((item) => (
             <ListItem
@@ -37,14 +39,9 @@ const List = () => {
         ));
     }
 
-    if (
-        (items.length === 0 && itemsError === "") ||
-        (userName === "" && userError === "")
-    ) {
+    if ((!items && !itemsError) || (!userName && !userError)) {
         return <LoadingScreen />;
     }
-
-    const theme = useTheme();
 
     return (
         <ScreenWrapper>

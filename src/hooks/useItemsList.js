@@ -4,10 +4,9 @@ import { supabase } from "../../supabaseClient";
 function useItemList() {
     const [desc, setDesc] = useState("");
     const [amount, setAmount] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState(null);
 
     useEffect(() => {
         async function fetchItems() {

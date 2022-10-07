@@ -10,8 +10,10 @@ import { Header, HeaderTitle } from "../styled/Header";
 import useUser from "../hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
 
+const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
+
 const Home = () => {
-    const { userName, handleLogOut } = useUser();
+    const { handleLogOut } = useUser();
 
     const navigation = useNavigation();
 
@@ -36,16 +38,20 @@ const Home = () => {
                         </LogoutButton>
                     </View>
                 </Header>
-                <NewListWrapper>
-                    <NewListInput placeholder="new list name" />
-
-                    <Button>
-                        <PlusSmallIcon
-                            color="#E7F6F2"
-                            size={24}
-                            fontWeight={800}
-                        />
-                    </Button>
+                <NewListWrapper
+                    behavior={Platform.OS === "ios" ? "position" : null}
+                    keyboardVerticalOffset={keyboardVerticalOffset}
+                >
+                    <InputWrapper>
+                        <NewListInput placeholder="new list name" />
+                        <Button>
+                            <PlusSmallIcon
+                                color="#E7F6F2"
+                                size={24}
+                                fontWeight={800}
+                            />
+                        </Button>
+                    </InputWrapper>
                 </NewListWrapper>
             </SafeArea>
         </ScreenWrapper>
@@ -60,8 +66,7 @@ const LogoutButton = styled.TouchableOpacity`
 
 const ButtonText = styled(MyText)`
     font-weight: 700;
-    text-align: center
-    ;
+    text-align: center;
 `;
 
 const Button = styled.TouchableOpacity`
@@ -75,18 +80,22 @@ const Button = styled.TouchableOpacity`
 `;
 
 const NewListInput = styled(Input)`
-    flex: 4;
-    margin: 0;
+    flex: 1;
+    margin-bottom: 0;
     height: 50px;
 `;
 
-const NewListWrapper = styled.KeyboardAvoidingView`
-    align-items: center;
+const InputWrapper = styled.View`
     flex-direction: row;
-    bottom: 0;
-    width: 100%;
+    align-items: center;
+`;
+
+const NewListWrapper = styled.KeyboardAvoidingView`
     padding: 0 16px 16px 16px;
+    width: 100%;
+    justify-items: center;
     position: absolute;
+    bottom: 0;
 `;
 
 export default Home;

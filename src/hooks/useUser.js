@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 
 function useUser() {
-    const [userName, setUserName] = useState("");
-    const [error, setError] = useState("");
+    const [userName, setUserName] = useState(null);
+    const [error, setError] = useState(null);
 
     async function handleLogOut() {
         try {
