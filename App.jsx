@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import Home from "./src/screens/Home";
+import List from "./src/screens/List";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import { supabase } from "./supabaseClient";
@@ -43,6 +44,7 @@ export default function App() {
             {session ? (
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="Home" component={Home} />
+                    <Stack.Screen name="List" component={List} />
                 </Stack.Navigator>
             ) : (
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
