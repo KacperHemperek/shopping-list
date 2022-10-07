@@ -6,8 +6,9 @@
 - [ ] create multiple lists
   - [ ] create list element 
   - [ ] connect user to multiple lists 
+  - [x] create list row on db
 - [ ] add people to lists
 - [x] make lists update on any db change
-- [ ] notify user on any invite
-- [ ] create push notifications when someone is add, someone joins (new item is added (?)) 
+- [ ] notify user on any invitemeone is add, someone joins (new item is added (?)) 
 - [ ] let lists owner kick people from lists
+- [ ] create push notifications when so

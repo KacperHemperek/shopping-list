@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { View } from "react-native";
+import React, { useState } from "react";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
 import { MyText } from "../styled/MyText";
 import styled from "styled-components";
@@ -9,11 +9,15 @@ import { PlusSmallIcon } from "react-native-heroicons/solid";
 import { Header, HeaderTitle } from "../styled/Header";
 import useUser from "../hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
+import useLists from "../hooks/useLists";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
 const Home = () => {
     const { handleLogOut } = useUser();
+    const { createList } = useLists();
+
+    const [listName, setListName] = useState(null);
 
     const navigation = useNavigation();
 
@@ -43,8 +47,16 @@ const Home = () => {
                     keyboardVerticalOffset={keyboardVerticalOffset}
                 >
                     <InputWrapper>
-                        <NewListInput placeholder="new list name" />
-                        <Button>
+                        <NewListInput
+                            placeholder="new list name"
+                            onChangeText={setListName}
+                            value={listName}
+                        />
+                        <Button
+                            onPress={() => {
+                                createList(listName);
+                            }}
+                        >
                             <PlusSmallIcon
                                 color="#E7F6F2"
                                 size={24}

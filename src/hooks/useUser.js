@@ -14,6 +14,17 @@ function useUser() {
         }
     }
 
+    async function getUserId() {
+        try {
+            const response = (await supabase.auth.getUser()).data.user.id;
+
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw new Error(error);
+        }
+    }
+
     useEffect(() => {
         async function fetchUser() {
             try {
@@ -29,7 +40,7 @@ function useUser() {
         fetchUser();
     }, []);
 
-    return { handleLogOut, userName, error };
+    return { handleLogOut, userName, error, getUserId };
 }
 
 export default useUser;
