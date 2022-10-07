@@ -4,6 +4,8 @@ import { supabase } from "../../supabaseClient";
 function useItemList() {
     const [desc, setDesc] = useState("");
     const [amount, setAmount] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const [items, setItems] = useState([]);
 
@@ -25,9 +27,11 @@ function useItemList() {
                     )
                 );
                 if (error) {
+                    setError(error);
                     console.error(error);
                 }
             } catch (error) {
+                setError(error);
                 console.error(error);
             }
         }
@@ -133,6 +137,7 @@ function useItemList() {
         setChecked,
         desc,
         amount,
+        error,
     };
 }
 

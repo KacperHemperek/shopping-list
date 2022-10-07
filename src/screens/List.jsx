@@ -10,9 +10,10 @@ import { Header, HeaderTitle } from "../styled/Header";
 import useUser from "../hooks/useUser";
 import BackButton from "../components/BackButton";
 import { ListWrapper } from "../styled/ListWrapper";
+import LoadingScreen from "./LoadingScreen";
 
 const List = () => {
-    const { userName } = useUser();
+    const { userName, error: userError } = useUser();
 
     const {
         addListItem,
@@ -23,6 +24,7 @@ const List = () => {
         setChecked,
         setDesc,
         items,
+        error: itemsError,
     } = useItemList();
 
     function renderList() {
@@ -33,6 +35,13 @@ const List = () => {
                 setChecked={() => setChecked(item.id, item.checked)}
             />
         ));
+    }
+
+    if (
+        (items.length === 0 && itemsError === "") ||
+        (userName === "" && userError === "")
+    ) {
+        return <LoadingScreen />;
     }
 
     const theme = useTheme();

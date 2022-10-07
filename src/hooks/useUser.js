@@ -3,6 +3,7 @@ import { supabase } from "../../supabaseClient";
 
 function useUser() {
     const [userName, setUserName] = useState("");
+    const [error, setError] = useState("");
 
     async function handleLogOut() {
         try {
@@ -21,13 +22,14 @@ function useUser() {
 
                 setUserName(response);
             } catch (error) {
+                setError(error);
                 console.error(error);
             }
         }
         fetchUser();
     }, []);
 
-    return { handleLogOut, userName };
+    return { handleLogOut, userName, error };
 }
 
 export default useUser;

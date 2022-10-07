@@ -43,7 +43,7 @@ export default function App() {
         <AppWrapper>
             {session ? (
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
-                    {/* <Stack.Screen name="Home" component={Home} /> */}
+                    <Stack.Screen name="Home" component={Home} />
                     <Stack.Screen name="List" component={List} />
                 </Stack.Navigator>
             ) : (

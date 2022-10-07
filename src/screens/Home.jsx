@@ -8,18 +8,33 @@ import { Input } from "../styled/Input";
 import { PlusSmallIcon } from "react-native-heroicons/solid";
 import { Header, HeaderTitle } from "../styled/Header";
 import useUser from "../hooks/useUser";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
     const { userName, handleLogOut } = useUser();
+
+    const navigation = useNavigation();
 
     return (
         <ScreenWrapper horizontalCenter>
             <SafeArea>
                 <Header justifyBetween>
                     <HeaderTitle>Your Lists</HeaderTitle>
-                    <LogoutButton onPress={handleLogOut}>
-                        <ButtonText>Log Out</ButtonText>
-                    </LogoutButton>
+                    <View>
+                        <LogoutButton
+                            style={{ marginBottom: 4 }}
+                            onPress={handleLogOut}
+                        >
+                            <ButtonText>Log Out</ButtonText>
+                        </LogoutButton>
+                        <LogoutButton
+                            onPress={() => {
+                                navigation.navigate("List");
+                            }}
+                        >
+                            <ButtonText>List</ButtonText>
+                        </LogoutButton>
+                    </View>
                 </Header>
                 <NewListWrapper>
                     <NewListInput placeholder="new list name" />
@@ -45,6 +60,8 @@ const LogoutButton = styled.TouchableOpacity`
 
 const ButtonText = styled(MyText)`
     font-weight: 700;
+    text-align: center
+    ;
 `;
 
 const Button = styled.TouchableOpacity`
