@@ -26,11 +26,11 @@ function useLists() {
         }
     }
 
-    function fetchUsersLists() {
+    function fetchLists() {
         //
     }
 
-    return { createList };
+    return { createList, fetchLists };
 }
 
 export default useLists;
