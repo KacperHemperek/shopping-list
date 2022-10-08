@@ -10,16 +10,22 @@ import { Header, HeaderTitle } from "../styled/Header";
 import useUser from "../hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
 import useLists from "../hooks/useLists";
+import { ListWrapper } from "../styled/ListWrapper";
+import ListCard from "../components/ListCard";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
 const Home = () => {
     const { handleLogOut } = useUser();
-    const { createList } = useLists();
+    const { createList, userLists } = useLists();
 
     const [listName, setListName] = useState(null);
 
     const navigation = useNavigation();
+
+    function renderList() {
+        return userLists.map((listName) => <ListCard name={listName} />);
+    }
 
     return (
         <ScreenWrapper horizontalCenter>
@@ -42,6 +48,7 @@ const Home = () => {
                         </LogoutButton>
                     </View>
                 </Header>
+                <ListWrapper>{renderList()}</ListWrapper>
                 <NewListWrapper
                     behavior={Platform.OS === "ios" ? "position" : null}
                     keyboardVerticalOffset={keyboardVerticalOffset}
@@ -55,6 +62,7 @@ const Home = () => {
                         <Button
                             onPress={() => {
                                 createList(listName);
+                                setListName("");
                             }}
                         >
                             <PlusSmallIcon

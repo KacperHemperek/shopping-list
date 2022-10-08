@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { MyText } from "../styled/MyText";
 
-const ListCard = () => {
+const ListCard = ({ name }) => {
     return (
         <View>
-            <Text>List</Text>
+            <MyText>{name}</MyText>
         </View>
     );
 };
