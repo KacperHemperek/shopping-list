@@ -24,7 +24,11 @@ const Home = () => {
     const navigation = useNavigation();
 
     function renderList() {
-        return userLists.map((listName) => <ListCard name={listName} />);
+        return (
+            userLists?.map((listName, index) => (
+                <ListCard key={listName + index} name={listName} />
+            )) ?? null
+        );
     }
 
     return (
