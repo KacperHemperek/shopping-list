@@ -2,37 +2,43 @@ import { View } from "react-native";
 import React, { useState } from "react";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
 import { MyText } from "../styled/MyText";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { SafeArea } from "../styled/SafeArea";
 import { Input } from "../styled/Input";
 import { PlusSmallIcon } from "react-native-heroicons/solid";
 import { Header, HeaderTitle } from "../styled/Header";
 import useUser from "../hooks/useUser";
-import { useNavigation } from "@react-navigation/native";
 import useLists from "../hooks/useLists";
 import { ListWrapper } from "../styled/ListWrapper";
 import ListCard from "../components/ListCard";
+import LoadingScreen from "./LoadingScreen";
+import { ArrowRightOnRectangleIcon } from "react-native-heroicons/solid";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
 const Home = () => {
     const { handleLogOut } = useUser();
-    const { createList, userLists } = useLists();
-
+    const { createList, userLists, error } = useLists();
+    const theme = useTheme();
     const [listName, setListName] = useState(null);
 
-    const navigation = useNavigation();
-
     function renderList() {
-        return (
-            userLists?.map((item, index) => (
-                <ListCard
-                    key={item.name + index}
-                    id={item.id}
-                    name={item.name}
-                />
-            )) ?? null
-        );
+        return userLists?.map((item, index) => {
+            return (
+                (
+                    <ListCard
+                        key={item.name + index}
+                        id={item.id}
+                        name={item.name}
+                        creator={item.creator}
+                    />
+                ) ?? null
+            );
+        });
+    }
+
+    if (!error && !userLists) {
+        return <LoadingScreen />;
     }
 
     return (
@@ -45,14 +51,10 @@ const Home = () => {
                             style={{ marginBottom: 4 }}
                             onPress={handleLogOut}
                         >
-                            <ButtonText>Log Out</ButtonText>
-                        </LogoutButton>
-                        <LogoutButton
-                            onPress={() => {
-                                navigation.navigate("List");
-                            }}
-                        >
-                            <ButtonText>List</ButtonText>
+                            <ArrowRightOnRectangleIcon
+                                size={24}
+                                color={theme.colors.text}
+                            />
                         </LogoutButton>
                     </View>
                 </Header>
@@ -87,7 +89,7 @@ const Home = () => {
 };
 
 const LogoutButton = styled.TouchableOpacity`
-    padding: 6px 12px;
+    padding: 6px;
     background-color: ${({ theme }) => theme.colors.blue};
     border-radius: 4px;
 `;
