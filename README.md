@@ -5,9 +5,9 @@
 - [x] link users list to db
 - [ ] create multiple lists
   - [ ] create list element 
-  - [ ] connect user to multiple lists 
+  - [x] connect user to multiple lists 
     - [x] fetch users lists on initial load
-    - [ ] update users lists on add delete update 
+    - [x] update users lists on add delete update 
   - [x] create list row on db
 - [ ] add people to lists
 - [x] make lists update on any db change
