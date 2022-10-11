@@ -3,12 +3,12 @@ import React from "react";
 import { ChevronLeftIcon } from "react-native-heroicons/solid";
 import styled, { useTheme } from "styled-components";
 
-function BackButton({ destination }) {
+function BackButton() {
     const theme = useTheme();
     const navigation = useNavigation();
 
     function handleBack() {
-        navigation.navigate(destination);
+        navigation.goBack();
     }
 
     return (

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 
-function useItemList() {
+function useItemList(listId) {
     const [desc, setDesc] = useState("");
     const [amount, setAmount] = useState("");
     const [error, setError] = useState(null);
@@ -10,16 +10,14 @@ function useItemList() {
 
     useEffect(() => {
         async function fetchItems() {
-            let userId = (await supabase.auth.getUser()).data.user.id;
-
             try {
                 const { data, error } = await supabase
                     .from("items")
                     .select("*")
-                    .eq("creator_id", userId);
+                    .eq("list_id", listId);
 
                 setItems(
-                    data.sort(
+                    data?.sort(
                         (a, b) =>
                             Number(new Date(a.created_at)) -
                             Number(new Date(b.created_at))
@@ -35,10 +33,9 @@ function useItemList() {
             }
         }
         async function setupSubscription() {
-            let userId = (await supabase.auth.getUser()).data.user.id;
-
+            supabase.from("items");
             supabase
-                .channel(`public:items:creator_id=eq.${userId}`)
+                .channel(`public:items:list_id=eq.${listId}`)
                 .on(
                     "postgres_changes",
                     {
@@ -82,11 +79,9 @@ function useItemList() {
         }
 
         try {
-            const id = (await supabase.auth.getUser()).data.user.id;
-
             const { error } = await supabase
                 .from("items")
-                .insert({ desc, amount, checked: false, creator_id: id });
+                .insert({ desc, amount, checked: false, list_id: listId });
 
             if (error) {
                 console.error(error);

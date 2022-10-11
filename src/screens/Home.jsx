@@ -25,8 +25,12 @@ const Home = () => {
 
     function renderList() {
         return (
-            userLists?.map((listName, index) => (
-                <ListCard key={listName + index} name={listName} />
+            userLists?.map((item, index) => (
+                <ListCard
+                    key={item.name + index}
+                    id={item.id}
+                    name={item.name}
+                />
             )) ?? null
         );
     }

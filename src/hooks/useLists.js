@@ -45,9 +45,11 @@ function useLists() {
             const userId = await getUserId();
             const { data, error } = await supabase
                 .from("lists")
-                .select("list_name, profiles(id), list_users!inner(*)")
+                .select("list_name, id, profiles(id), list_users!inner(*)")
                 .eq("list_users.user_id", userId);
-            setUserLists(data.map((item) => item.list_name));
+            setUserLists(
+                data.map((item) => ({ id: item.id, name: item.list_name }))
+            );
 
             if (error) {
                 console.error(error.message);

@@ -12,9 +12,9 @@ import BackButton from "../components/BackButton";
 import { ListWrapper } from "../styled/ListWrapper";
 import LoadingScreen from "./LoadingScreen";
 
-const List = () => {
+const List = ({ route }) => {
     const { userName, error: userError } = useUser();
-
+    const { listId } = route.params;
     const {
         addListItem,
         amount,
@@ -25,18 +25,20 @@ const List = () => {
         setDesc,
         items,
         error: itemsError,
-    } = useItemList();
+    } = useItemList(listId);
 
     const theme = useTheme();
 
     function renderList() {
-        return items.map((item) => (
-            <ListItem
-                key={item.id}
-                {...item}
-                setChecked={() => setChecked(item.id, item.checked)}
-            />
-        ));
+        return (
+            items?.map((item) => (
+                <ListItem
+                    key={item.id}
+                    {...item}
+                    setChecked={() => setChecked(item.id, item.checked)}
+                />
+            )) ?? null
+        );
     }
 
     if ((!items && !itemsError) || (!userName && !userError)) {
@@ -47,7 +49,7 @@ const List = () => {
         <ScreenWrapper>
             <SafeArea>
                 <Header>
-                    <BackButton destination="Home" />
+                    <BackButton />
                     <HeaderTitle>{userName}'s List</HeaderTitle>
                 </Header>
                 <InputWrapper>

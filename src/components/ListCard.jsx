@@ -1,12 +1,20 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { MyText } from "../styled/MyText";
+import { useNavigation } from "@react-navigation/native";
 
-const ListCard = ({ name }) => {
+const ListCard = ({ name, id }) => {
+    const navigation = useNavigation();
+
+    function redirectToList() {
+        console.log(id);
+        navigation.navigate("List", { listId: id });
+    }
+
     return (
-        <View>
+        <TouchableOpacity onPress={redirectToList}>
             <MyText>{name}</MyText>
-        </View>
+        </TouchableOpacity>
     );
 };
 
