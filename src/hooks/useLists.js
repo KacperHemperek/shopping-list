@@ -11,8 +11,6 @@ function useLists() {
     async function createList(name) {
         try {
             const userId = await getUserId();
-            console.log({ userId });
-            console.log({ name });
             const { error: listError, data: listData } = await supabase
                 .from("lists")
                 .insert({
@@ -24,8 +22,6 @@ function useLists() {
             const { error: connectionError } = await supabase
                 .from("list_users")
                 .insert({ user_id: userId, list_id: listData[0].id });
-
-            console.log({ listData });
 
             if (listError) {
                 setError(listError);
@@ -49,12 +45,12 @@ function useLists() {
             const { data, error: fetchError } = await supabase
                 .from("lists")
                 .select(
-                    "list_name, id, profiles(username), list_users!inner(*)"
+                    "list_name, id, created_at, profiles(username), list_users!inner(*)"
                 )
-                .eq("list_users.user_id", userId);
+                .eq("list_users.user_id", userId)
+                .order("created_at", { ascending: true });
             setUserLists(
                 data.map((item) => {
-                    console.log(item);
                     return {
                         id: item.id,
                         name: item.list_name,
@@ -74,9 +70,45 @@ function useLists() {
             throw new Error(err);
         }
     }
+    async function subscribeToLists() {
+        const userId = await getUserId();
+
+        supabase
+            .channel("public:list_users")
+            .on(
+                "postgres_changes",
+                {
+                    event: "INSERT",
+                    schema: "public",
+                    table: "list_users",
+                },
+                async (payload) => {
+                    if (payload.new.user_id === userId) {
+                        const newList = (
+                            await supabase
+                                .from("lists")
+                                .select("list_name, id, profiles(username)")
+                                .eq("id", payload.new.list_id)
+                        ).data;
+
+                        console.log(newList);
+                        setUserLists((prev) => [
+                            ...prev,
+                            {
+                                id: newList.id,
+                                creator: newList.profiles.username,
+                                name: newList.list_name,
+                            },
+                        ]);
+                    }
+                }
+            )
+            .subscribe();
+    }
 
     useEffect(() => {
         fetchLists();
+        subscribeToLists();
     }, []);
 
     return { createList, fetchLists, userLists, error };

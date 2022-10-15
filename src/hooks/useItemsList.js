@@ -14,15 +14,9 @@ function useItemList(listId) {
                 const { data, error } = await supabase
                     .from("items")
                     .select("*")
-                    .eq("list_id", listId);
-
-                setItems(
-                    data?.sort(
-                        (a, b) =>
-                            Number(new Date(a.created_at)) -
-                            Number(new Date(b.created_at))
-                    )
-                );
+                    .eq("list_id", listId)
+                    .order("created_at", { ascending: true });
+                setItems(data);
                 if (error) {
                     setError(error);
                     console.error(error);

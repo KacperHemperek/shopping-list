@@ -10,7 +10,6 @@ const ListCard = ({ name, id, creator }) => {
     const theme = useTheme();
 
     function redirectToList() {
-        console.log(id);
         navigation.navigate("List", { listId: id });
     }
 
