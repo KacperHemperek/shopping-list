@@ -4,7 +4,7 @@
 ## TODO
 - [x] link users list to db
 - [ ] create multiple lists
-  - [ ] create list element 
+  - [x] create list element 
   - [x] connect user to multiple lists 
     - [x] fetch users lists on initial load
     - [ ] update users lists on add delete update 

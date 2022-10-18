@@ -51,7 +51,8 @@ function useLists() {
                 .select(
                     "list_name, id, profiles(username), list_users!inner(*)"
                 )
-                .eq("list_users.user_id", userId);
+                .eq("list_users.user_id", userId)
+                .order("created_at", { ascending: true });
             setUserLists(
                 data.map((item) => {
                     console.log(item);

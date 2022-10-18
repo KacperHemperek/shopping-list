@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { MyText } from "./MyText";
 
 export const FormCheckboxWrapper = styled.View`
+    margin-top: 16px;
     margin-bottom: 16px;
 `;
 export const FormButton = styled.TouchableOpacity`
@@ -18,7 +19,7 @@ export const FormText = styled(MyText)`
 
 export const FormTitle = styled(MyText)`
     font-size: 40px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 `;
 
 export const FormLink = styled(MyText)`

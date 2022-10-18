@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Alert, TextInput } from "react-native";
+import { Alert } from "react-native";
 import Checkbox from "../components/Checkbox";
 import { logIn } from "../helpers/Auth";
 import {
@@ -12,8 +12,11 @@ import {
     FormTitle,
     InputGroup,
 } from "../styled/FormElements";
-import { Input } from "../styled/Input";
+import { Input, Label, LabelWrapper } from "../styled/Input";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
+
+import { EnvelopeIcon, LockClosedIcon } from "react-native-heroicons/outline";
+import { useTheme } from "styled-components";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 40 : 0;
 
@@ -21,6 +24,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const theme = useTheme();
 
     const navigation = useNavigation();
 
@@ -43,17 +47,31 @@ const Login = () => {
                 keyboardVerticalOffset={keyboardVerticalOffset}
             >
                 <FormTitle>Log In</FormTitle>
+                <LabelWrapper>
+                    <EnvelopeIcon
+                        size={16}
+                        color={theme.colors.gray}
+                        style={{ marginTop: 2, marginRight: 6 }}
+                    />
+                    <Label>Email</Label>
+                </LabelWrapper>
                 <Input
                     keyboardType="email-address"
-                    placeholder="email"
                     value={email}
                     onChangeText={setEmail}
                     autoCapitalize="none"
                 />
+                <LabelWrapper>
+                    <LockClosedIcon
+                        size={16}
+                        color={theme.colors.gray}
+                        style={{ marginTop: 2, marginRight: 6 }}
+                    />
+                    <Label>Password</Label>
+                </LabelWrapper>
                 <Input
                     keyboardType="default"
                     secureTextEntry={!showPassword}
-                    placeholder="password"
                     value={password}
                     onChangeText={setPassword}
                 />
