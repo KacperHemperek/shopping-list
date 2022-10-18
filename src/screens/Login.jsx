@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, TextInput } from "react-native";
 import Checkbox from "../components/Checkbox";
 import { logIn } from "../helpers/Auth";
 import {
@@ -48,6 +48,7 @@ const Login = () => {
                     placeholder="email"
                     value={email}
                     onChangeText={setEmail}
+                    autoCapitalize="none"
                 />
                 <Input
                     keyboardType="default"
