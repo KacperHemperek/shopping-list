@@ -14,15 +14,10 @@ function useItemList(listId) {
                 const { data, error } = await supabase
                     .from("items")
                     .select("*")
-                    .eq("list_id", listId);
+                    .eq("list_id", listId)
+                    .order("created_at", { ascending: true });
 
-                setItems(
-                    data?.sort(
-                        (a, b) =>
-                            Number(new Date(a.created_at)) -
-                            Number(new Date(b.created_at))
-                    )
-                );
+                setItems(data);
                 if (error) {
                     setError(error);
                     console.error(error);
@@ -33,7 +28,6 @@ function useItemList(listId) {
             }
         }
         async function setupSubscription() {
-            supabase.from("items");
             supabase
                 .channel(`public:items:list_id=eq.${listId}`)
                 .on(

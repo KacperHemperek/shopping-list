@@ -45,7 +45,7 @@ const Home = () => {
                 throw new Error(changeListError);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw new Error(error);
         }
     }

@@ -16,7 +16,6 @@ const ListCard = ({ name, id, creator, onEdit }) => {
     const [editId, setEditId] = useState("");
 
     function redirectToList() {
-        console.log(id);
         navigation.navigate("List", { listId: id });
     }
 

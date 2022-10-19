@@ -11,8 +11,6 @@ function useLists() {
     async function createList(name) {
         try {
             const userId = await getUserId();
-            console.log({ userId });
-            console.log({ name });
             const { error: listError, data: listData } = await supabase
                 .from("lists")
                 .insert({
@@ -24,8 +22,6 @@ function useLists() {
             const { error: connectionError } = await supabase
                 .from("list_users")
                 .insert({ user_id: userId, list_id: listData[0].id });
-
-            console.log({ listData });
 
             if (listError) {
                 setError(listError);
@@ -55,7 +51,6 @@ function useLists() {
                 .order("created_at", { ascending: true });
             setUserLists(
                 data.map((item) => {
-                    console.log(item);
                     return {
                         id: item.id,
                         name: item.list_name,
@@ -76,7 +71,42 @@ function useLists() {
         }
     }
 
+    async function setupSubscription() {
+        console.log("setting up subscription");
+        try {
+            const userId = await getUserId();
+            supabase
+                .channel(`public:list_users`)
+                .on(
+                    "postgres_changes",
+                    { event: "INSERT", schema: "public", table: "list_users" },
+                    async (payload) => {
+                        const newList = await supabase
+                            .from("lists")
+                            .select("list_name, id, profiles(username)")
+                            .eq("id", payload.new.list_id);
+                        console.log(newList.data[0]);
+                        const { id, list_name, profiles } = newList.data[0];
+
+                        setUserLists((prevList) => [
+                            ...prevList,
+                            {
+                                id,
+                                name: list_name,
+                                creator: profiles.username,
+                            },
+                        ]);
+                    }
+                )
+                .subscribe();
+        } catch (error) {
+            console.error(error);
+            throw new Error(error);
+        }
+    }
+
     useEffect(() => {
+        setupSubscription();
         fetchLists();
     }, []);
 
