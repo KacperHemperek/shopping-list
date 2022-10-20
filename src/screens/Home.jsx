@@ -135,12 +135,14 @@ const Home = () => {
                     onChangeText={setNewUserEmail}
                 />
                 <ListWrapper></ListWrapper>
+                {/* TODO add delete List button */}
                 <SubmitButton onPress={changeList}>
                     <FolderArrowDownIcon
                         style={{ marginRight: 6 }}
                         color="#E7F6F2"
                         size={20}
                     />
+
                     <MyText>Save</MyText>
                 </SubmitButton>
             </Popup>
@@ -169,7 +171,7 @@ const SubmitButton = styled.TouchableOpacity`
 const LogoutButton = styled.TouchableOpacity`
     padding: 8px;
     background-color: ${({ theme }) => theme.colors.blue};
-    border-radius: 100%;
+    border-radius: 100px;
 `;
 
 const Button = styled.TouchableOpacity`

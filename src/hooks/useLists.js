@@ -42,6 +42,7 @@ function useLists() {
     async function fetchLists() {
         try {
             const userId = await getUserId();
+
             const { data, error: fetchError } = await supabase
                 .from("lists")
                 .select(
@@ -72,20 +73,30 @@ function useLists() {
     }
 
     async function setupSubscription() {
-        console.log("setting up subscription");
         try {
             const userId = await getUserId();
+            console.log(userId);
             supabase
-                .channel(`public:list_users`)
+                .channel(`public:list_users:user_id=eq.${userId}`)
                 .on(
                     "postgres_changes",
                     { event: "INSERT", schema: "public", table: "list_users" },
                     async (payload) => {
+                        /* for some reason public:list_user_id=eq.(userId) 
+                        does not work so this is a workaround */
+
+                        if (payload.new.user_id !== userId) {
+                            return;
+                        }
+                        //make sure that new list is current users with eq at the end
                         const newList = await supabase
                             .from("lists")
-                            .select("list_name, id, profiles(username)")
-                            .eq("id", payload.new.list_id);
-                        console.log(newList.data[0]);
+                            .select(
+                                "list_name, id, profiles!inner(username,id)"
+                            )
+                            .eq("id", payload.new.list_id)
+                            .eq("profiles.id", userId);
+
                         const { id, list_name, profiles } = newList.data[0];
 
                         setUserLists((prevList) => [
@@ -98,7 +109,21 @@ function useLists() {
                         ]);
                     }
                 )
-                .subscribe();
+                .on(
+                    "postgres_changes",
+                    { event: "UPDATE", schema: "public", table: "list_users" },
+                    async (payload) => {
+                        //should listen to all lists that has it's user_id so will react to changes
+                        //of not only user's lists but also lists that user is invited to 
+                        const updatedList = await supabase
+                            .from("lists")
+                            .select("list_name, id, profiles(username, id)")
+                            .eq("id", payload.new.id)
+                            .eq("profiles(id)", userId);
+                    }
+                )
+                //TODO: create on delete update
+                .subscribe((status) => console.log("subscription: ", status));
         } catch (error) {
             console.error(error);
             throw new Error(error);

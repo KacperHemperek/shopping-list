@@ -1,19 +1,13 @@
-import { View, Text, TouchableOpacity, Modal } from "react-native";
-import React, { useState } from "react";
+import { View } from "react-native";
+import React from "react";
 import { MyText } from "../styled/MyText";
 import { useNavigation } from "@react-navigation/native";
 import styled, { useTheme } from "styled-components";
-import {
-    TrashIcon,
-    ListBulletIcon,
-    PencilSquareIcon,
-} from "react-native-heroicons/solid";
+import { ListBulletIcon, PencilSquareIcon } from "react-native-heroicons/solid";
 
 const ListCard = ({ name, id, creator, onEdit }) => {
     const navigation = useNavigation();
     const theme = useTheme();
-    const [showEdit, setShowEdit] = useState(false);
-    const [editId, setEditId] = useState("");
 
     function redirectToList() {
         navigation.navigate("List", { listId: id });
