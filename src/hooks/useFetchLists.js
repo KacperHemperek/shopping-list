@@ -42,7 +42,6 @@ function useLists() {
   async function setupSubscription() {
     try {
       const userId = await getUserId();
-      console.log(userId);
       supabase
         .channel(`public:list_users:user_id=eq.${userId}`)
         .on(
@@ -84,9 +83,7 @@ function useLists() {
           async (payload) => {
             //should listen to all lists that has it's user_id so will react to changes
             //of not only user's lists but also lists that user is invited to
-            console.log(payload.new);
             const { list_name, id } = payload.new;
-            console.log("update");
             setUserLists((lists) =>
               lists.map((list) =>
                 list.id === payload.new.id
@@ -97,6 +94,16 @@ function useLists() {
                     }
                   : list
               )
+            );
+          }
+        )
+        .on(
+          "postgres_changes",
+          { event: "DELETE", schema: "public", table: "lists" },
+          async (payload) => {
+            //update lists when creator deletes list 
+            setUserLists((prevLists) =>
+              prevLists?.filter((list) => list.id !== payload.old.id)
             );
           }
         )

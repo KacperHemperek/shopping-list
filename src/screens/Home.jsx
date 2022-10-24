@@ -15,6 +15,7 @@ import LoadingScreen from "./LoadingScreen";
 import {
   ArrowRightOnRectangleIcon,
   UsersIcon,
+  TrashIcon,
 } from "react-native-heroicons/solid";
 import { FolderArrowDownIcon } from "react-native-heroicons/outline";
 import Popup from "../components/Popup";
@@ -25,7 +26,7 @@ const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 const Home = () => {
   const { handleLogOut } = useUser();
   const { userLists, error } = useLists();
-  const { createList, changeList } = useUpdateLists();
+  const { createList, changeList, deleteList } = useUpdateLists();
   const theme = useTheme();
   const [listName, setListName] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
@@ -91,7 +92,7 @@ const Home = () => {
           </InputWrapper>
         </NewListWrapper>
       </SafeArea>
-      <Popup showModal={showEdit} setShowModal={() => setShowEdit(false)}>
+      <Popup showModal={showEdit} hideModal={() => setShowEdit(false)}>
         <HeaderInput value={editName} onChangeText={setEditName} />
         <LabelWrapper>
           <UsersIcon
@@ -109,24 +110,48 @@ const Home = () => {
         />
         <ListWrapper></ListWrapper>
         {/* TODO add delete List button */}
-        <SubmitButton
-          onPress={async () => {
-            const success = await changeList(editName, editId);
-            success && setShowEdit(false);
-          }}
-        >
-          <FolderArrowDownIcon
-            style={{ marginRight: 6 }}
-            color="#E7F6F2"
-            size={20}
-          />
+        <ButtonWrapper>
+          <SubmitButton
+            onPress={async () => {
+              try {
+                await changeList(editName, editId);
+                setShowEdit(false);
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            <FolderArrowDownIcon
+              style={{ marginRight: 6 }}
+              color="#E7F6F2"
+              size={20}
+            />
 
-          <MyText>Save</MyText>
-        </SubmitButton>
+            <MyText>Save</MyText>
+          </SubmitButton>
+          <SubmitButton
+            onPress={async () => {
+              try {
+                await deleteList(editId);
+                setShowEdit(false);
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+            type="delete"
+          >
+            <TrashIcon style={{ marginRight: 6 }} color="#E7F6F2" size={20} />
+
+            <MyText>Delete</MyText>
+          </SubmitButton>
+        </ButtonWrapper>
       </Popup>
     </ScreenWrapper>
   );
 };
+const ButtonWrapper = styled.View`
+  flex-direction: row;
+`;
 
 const HeaderInput = styled.TextInput`
   color: ${(props) => props.theme.colors.text};
@@ -140,8 +165,10 @@ const SubmitButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.colors.blue};
+  background-color: ${(props) =>
+    props.type === "delete" ? props.theme.colors.red : props.theme.colors.blue};
   padding: 8px;
+  margin-right: 16px;
   border-radius: 4px;
   width: 90px;
 `;

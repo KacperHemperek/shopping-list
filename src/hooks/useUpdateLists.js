@@ -48,15 +48,46 @@ function useUpdateLists() {
       if (changeListError) {
         throw new Error(changeListError);
       }
-
-      return true;
     } catch (error) {
       console.error(error);
       throw new Error(error);
     }
   }
 
-  return { createList, changeList };
+  async function deleteList(deleteId) {
+    try {
+      const { error: deleteConnectionError } = await supabase
+        .from("list_users")
+        .delete()
+        .eq("list_id", deleteId);
+      const { error: deleteItemsError } = await supabase
+        .from("items")
+        .delete()
+        .eq("list_id", deleteId);
+
+      const { error: deleteListError } = await supabase
+        .from("lists")
+        .delete()
+        .eq("id", deleteId);
+      if (deleteListError) {
+        console.error(deleteListError);
+        throw new Error(deleteListError.message);
+      }
+      if (deleteConnectionError) {
+        console.error(deleteConnectionError);
+        throw new Error(deleteConnectionError.message);
+      }
+      if (deleteItemsError) {
+        console.error(deleteItemsError);
+        throw new Error(deleteItemsError.messsage);
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error(error);
+    }
+  }
+
+  return { createList, changeList, deleteList };
 }
 
 export default useUpdateLists;
