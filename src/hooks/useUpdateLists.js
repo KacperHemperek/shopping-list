@@ -60,6 +60,7 @@ function useUpdateLists() {
         .from("list_users")
         .delete()
         .eq("list_id", deleteId);
+
       const { error: deleteItemsError } = await supabase
         .from("items")
         .delete()
@@ -69,6 +70,7 @@ function useUpdateLists() {
         .from("lists")
         .delete()
         .eq("id", deleteId);
+
       if (deleteListError) {
         console.error(deleteListError);
         throw new Error(deleteListError.message);

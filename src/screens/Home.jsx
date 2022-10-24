@@ -20,6 +20,7 @@ import {
 import { FolderArrowDownIcon } from "react-native-heroicons/outline";
 import Popup from "../components/Popup";
 import useUpdateLists from "../hooks/useUpdateLists";
+import AddUser from "../components/AddUser";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
@@ -103,11 +104,7 @@ const Home = () => {
           <Label>Add new users</Label>
         </LabelWrapper>
         <LabelWrapper></LabelWrapper>
-        <Input
-          autoCapitalize="none"
-          value={newUserEmail}
-          onChangeText={setNewUserEmail}
-        />
+        <AddUser />
         <ListWrapper></ListWrapper>
         {/* TODO add delete List button */}
         <ButtonWrapper>

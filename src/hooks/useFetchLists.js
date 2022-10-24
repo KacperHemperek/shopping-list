@@ -50,7 +50,6 @@ function useLists() {
           async (payload) => {
             /* for some reason public:list_user_id=eq.${userId} 
             does not work so this is a workaround */
-
             if (payload.new.user_id !== userId) {
               return;
             }
@@ -101,7 +100,7 @@ function useLists() {
           "postgres_changes",
           { event: "DELETE", schema: "public", table: "lists" },
           async (payload) => {
-            //update lists when creator deletes list 
+            //update lists when creator deletes list
             setUserLists((prevLists) =>
               prevLists?.filter((list) => list.id !== payload.old.id)
             );
