@@ -1,11 +1,11 @@
-import { View } from "react-native";
+import { FlatList, Modal, ScrollView, View } from "react-native";
 import React, { useState } from "react";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
 import { MyText } from "../styled/MyText";
 import styled, { useTheme } from "styled-components";
 import { SafeArea } from "../styled/SafeArea";
 import { Input, Label, LabelWrapper } from "../styled/Input";
-import { PlusSmallIcon } from "react-native-heroicons/solid";
+import { BellAlertIcon, PlusSmallIcon } from "react-native-heroicons/solid";
 import { Header, HeaderTitle } from "../styled/Header";
 import useUser from "../hooks/useUser";
 import useLists from "../hooks/useFetchLists";
@@ -21,6 +21,8 @@ import { FolderArrowDownIcon } from "react-native-heroicons/outline";
 import Popup from "../components/Popup";
 import useUpdateLists from "../hooks/useUpdateLists";
 import AddUser from "../components/AddUser";
+import { shadow } from "../helpers/Shadow";
+import Notification from "../components/Notification";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
@@ -34,6 +36,7 @@ const Home = () => {
   const [editId, setEditId] = useState("");
   const [editName, setEditName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   function renderList() {
     return userLists?.map((item, index) => {
@@ -65,11 +68,71 @@ const Home = () => {
       <SafeArea>
         <Header justifyBetween>
           <HeaderTitle>Your Lists</HeaderTitle>
-          <View>
-            <LogoutButton style={{ marginBottom: 4 }} onPress={handleLogOut}>
+          <ButtonWrapper>
+            <NavButton
+              type={"neutral"}
+              onPress={() => {
+                setNotificationsOpen(true);
+              }}
+              style={{
+                marginRight: 16,
+              }}
+            >
+              <BellAlertIcon size={24} color={theme.colors.text} />
+            </NavButton>
+            <Modal transparent visible={notificationsOpen} animationType="fade">
+              <NotificationBackground
+                activeOpacity={1}
+                onPress={() => setNotificationsOpen(false)}
+              >
+                <NotificationsContainer style={shadow}>
+                  <ScrollView style={{ flex: 1 }}>
+                    <View onStartShouldSetResponder={() => true}>
+                      <Notification
+                        listName={"New List"}
+                        userName={"Kacper H"}
+                        state={"accepted"}
+                        seen={true}
+                      />
+                      <Notification
+                        listName={"One more List"}
+                        userName={"Zygmunt"}
+                        state="pending"
+                        seen={false}
+                      />
+                      <Notification
+                        listName={"List with parents"}
+                        userName={"Kacper H"}
+                        state={"rejected"}
+                        seen={false}
+                      />
+                      <Notification
+                        listName={"New List"}
+                        userName={"Kacper H"}
+                        state={"pending"}
+                        seen={false}
+                      />
+                      <Notification
+                        listName={"New List"}
+                        userName={"Kacper H"}
+                        state={"pending"}
+                        seen={false}
+                      />
+                      <Notification
+                        listName={"New List"}
+                        userName={"Kacper H"}
+                        state={"pending"}
+                        seen={false}
+                      />
+                    </View>
+                  </ScrollView>
+                </NotificationsContainer>
+              </NotificationBackground>
+            </Modal>
+            <NavButton style={{ marginBottom: 4 }} onPress={handleLogOut}>
               <ArrowRightOnRectangleIcon size={24} color={theme.colors.text} />
-            </LogoutButton>
-          </View>
+            </NavButton>
+          </ButtonWrapper>
         </Header>
         <ListWrapper>{renderList()}</ListWrapper>
         <NewListWrapper
@@ -78,11 +141,13 @@ const Home = () => {
         >
           <InputWrapper>
             <NewListInput
+              style={shadow}
               placeholder="new list name"
               onChangeText={setListName}
               value={listName}
             />
             <Button
+              style={shadow}
               onPress={() => {
                 createList(listName);
                 setListName("");
@@ -103,10 +168,10 @@ const Home = () => {
           />
           <Label>Add new users</Label>
         </LabelWrapper>
-        <LabelWrapper></LabelWrapper>
-        <AddUser />
+
+        <AddUser listId={editId} />
         <ListWrapper></ListWrapper>
-        {/* TODO add delete List button */}
+
         <ButtonWrapper>
           <SubmitButton
             onPress={async () => {
@@ -146,7 +211,31 @@ const Home = () => {
     </ScreenWrapper>
   );
 };
+
+const NotificationsContainer = styled.View`
+  background-color: ${({ theme }) => theme.colors.darkBlue};
+  top: 120px;
+  right: 20px;
+  position: absolute;
+  width: 85%;
+  border-radius: 16px;
+  max-height: 500px;
+  min-height: 100px;
+  padding: 8px 0px;
+  z-index: 50;
+  border: 1px solid ${({ theme }) => theme.colors.gray};
+`;
+
+const NotificationBackground = styled.TouchableOpacity`
+  background-color: rgba(0, 0, 0, 0);
+  width: 100%;
+  flex: 1;
+  position: relative;
+`;
+
 const ButtonWrapper = styled.View`
+  position: relative;
+  align-items: center;
   flex-direction: row;
 `;
 
@@ -170,9 +259,10 @@ const SubmitButton = styled.TouchableOpacity`
   width: 90px;
 `;
 
-const LogoutButton = styled.TouchableOpacity`
+const NavButton = styled.TouchableOpacity`
   padding: 8px;
-  background-color: ${({ theme }) => theme.colors.blue};
+  background-color: ${({ theme, type }) =>
+    type === "neutral" ? "transparent" : theme.colors.blue};
   border-radius: 100px;
 `;
 
