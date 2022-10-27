@@ -1,28 +1,28 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import useUser from "./useUser";
+import useCurrentUser from "./useCurrentUser";
 
 function useLists() {
-  const { getUserId } = useUser();
+  const { currentUser } = useCurrentUser();
 
   const [userLists, setUserLists] = useState(null);
   const [error, setError] = useState(null);
 
   async function fetchLists() {
     try {
-      const userId = await getUserId();
-
       const { data, error: fetchError } = await supabase
         .from("lists")
-        .select("list_name, id, profiles(username), list_users!inner(*)")
-        .eq("list_users.user_id", userId)
+        .select("list_name, id, profiles(*), list_users!inner(*)")
+        .eq("list_users.user_id", currentUser.id)
         .order("created_at", { ascending: true });
+
+      console.log(data.map((item) => item.profiles));
       setUserLists(
         data.map((item) => {
           return {
             id: item.id,
             name: item.list_name,
-            creator: item.profiles.username,
+            creator: item.profiles,
           };
         })
       );
@@ -41,16 +41,15 @@ function useLists() {
 
   async function setupSubscription() {
     try {
-      const userId = await getUserId();
       supabase
-        .channel(`public:list_users:user_id=eq.${userId}`)
+        .channel(`public:list_users:user_id=eq.${currentUser.id}`)
         .on(
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "list_users" },
           async (payload) => {
             /* for some reason public:list_user_id=eq.${userId} 
             does not work so this is a workaround */
-            if (payload.new.user_id !== userId) {
+            if (payload.new.user_id !== currentUser.id) {
               return;
             }
             //make sure that new list is current user's with eq at the end
@@ -58,7 +57,7 @@ function useLists() {
               .from("lists")
               .select("list_name, id, profiles!inner(username,id)")
               .eq("id", payload.new.list_id)
-              .eq("profiles.id", userId);
+              .eq("profiles.id", currentUser.id);
 
             const { id, list_name, profiles } = newList.data[0];
 

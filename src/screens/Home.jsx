@@ -7,7 +7,6 @@ import { SafeArea } from "../styled/SafeArea";
 import { Input, Label, LabelWrapper } from "../styled/Input";
 import { BellAlertIcon, PlusSmallIcon } from "react-native-heroicons/solid";
 import { Header, HeaderTitle } from "../styled/Header";
-import useUser from "../hooks/useUser";
 import useLists from "../hooks/useFetchLists";
 import { ListWrapper } from "../styled/ListWrapper";
 import ListCard from "../components/ListCard";
@@ -23,17 +22,18 @@ import useUpdateLists from "../hooks/useUpdateLists";
 import AddUser from "../components/AddUser";
 import { shadow } from "../helpers/Shadow";
 import Notification from "../components/Notification";
+import useCurrentUser from "../hooks/useCurrentUser";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
 const Home = () => {
-  const { handleLogOut } = useUser();
   const { userLists, error } = useLists();
+  const { logOut } = useCurrentUser();
   const { createList, changeList, deleteList } = useUpdateLists();
   const theme = useTheme();
   const [listName, setListName] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-  const [editId, setEditId] = useState("");
+  const [currentEditList, setCurrentEditList] = useState(null);
   const [editName, setEditName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -46,9 +46,9 @@ const Home = () => {
             key={item.name + index}
             id={item.id}
             name={item.name}
-            creator={item.creator}
+            creator={item.creator.username}
             onEdit={() => {
-              setEditId(item.id);
+              setCurrentEditList(item);
               setEditName(item.name);
               setNewUserEmail("");
               setShowEdit(true);
@@ -129,7 +129,7 @@ const Home = () => {
                 </NotificationsContainer>
               </NotificationBackground>
             </Modal>
-            <NavButton style={{ marginBottom: 4 }} onPress={handleLogOut}>
+            <NavButton style={{ marginBottom: 4 }} onPress={logOut}>
               <ArrowRightOnRectangleIcon size={24} color={theme.colors.text} />
             </NavButton>
           </ButtonWrapper>
@@ -169,14 +169,14 @@ const Home = () => {
           <Label>Add new users</Label>
         </LabelWrapper>
 
-        <AddUser listId={editId} />
+        <AddUser listId={currentEditList} />
         <ListWrapper></ListWrapper>
 
         <ButtonWrapper>
           <SubmitButton
             onPress={async () => {
               try {
-                await changeList(editName, editId);
+                await changeList(editName, currentEditList.id);
                 setShowEdit(false);
               } catch (error) {
                 console.error(error);
@@ -194,7 +194,7 @@ const Home = () => {
           <SubmitButton
             onPress={async () => {
               try {
-                await deleteList(editId);
+                await deleteList(currentEditList);
                 setShowEdit(false);
               } catch (error) {
                 console.error(error);

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { supabase } from "../../supabaseClient";
-import useUser from "./useUser";
+import useCurrentUser from "./useCurrentUser";
 
 function useUpdateLists() {
-  const { getUserId } = useUser();
+  const { currentUser } = useCurrentUser();
   const [error, setError] = useState(null);
 
   async function createList(name) {
     try {
-      const userId = await getUserId();
+      const userId = currentUser.id;
       const { error: listError, data: listData } = await supabase
 
         .from("lists")
@@ -54,22 +54,23 @@ function useUpdateLists() {
     }
   }
 
-  async function deleteList(deleteId) {
+  async function deleteList(list) {
+    if (currentUser.id !== list.creator.id) return;
     try {
       const { error: deleteConnectionError } = await supabase
         .from("list_users")
         .delete()
-        .eq("list_id", deleteId);
+        .eq("list_id", list.id);
 
       const { error: deleteItemsError } = await supabase
         .from("items")
         .delete()
-        .eq("list_id", deleteId);
+        .eq("list_id", list.id);
 
       const { error: deleteListError } = await supabase
         .from("lists")
         .delete()
-        .eq("id", deleteId);
+        .eq("id", list.id);
 
       if (deleteListError) {
         console.error(deleteListError);
