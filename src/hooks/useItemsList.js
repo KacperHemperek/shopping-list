@@ -27,7 +27,6 @@ function useItemList(listId) {
             }
         }
         async function setupSubscription() {
-            supabase.from("items");
             supabase
                 .channel(`public:items:list_id=eq.${listId}`)
                 .on(

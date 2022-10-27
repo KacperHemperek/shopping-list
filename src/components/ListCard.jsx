@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { MyText } from "../styled/MyText";
 import { useNavigation } from "@react-navigation/native";
 import styled, { useTheme } from "styled-components";
-import { TrashIcon, ListBulletIcon } from "react-native-heroicons/solid";
+import { ListBulletIcon, PencilSquareIcon } from "react-native-heroicons/solid";
 
-const ListCard = ({ name, id, creator }) => {
+const ListCard = ({ name, id, creator, onEdit }) => {
     const navigation = useNavigation();
     const theme = useTheme();
 
@@ -22,9 +22,11 @@ const ListCard = ({ name, id, creator }) => {
                     <Creator>{creator}</Creator>
                 </View>
             </TitleWrapper>
-            <CardButton>
-                <TrashIcon size={20} color={theme.colors.text} />
-            </CardButton>
+            <ButtonGroup>
+                <CardButton onPress={onEdit} type="secondary">
+                    <PencilSquareIcon size={20} color={theme.colors.text} />
+                </CardButton>
+            </ButtonGroup>
         </CardWrapper>
     );
 };
@@ -52,14 +54,28 @@ const CardTitle = styled(MyText)`
 const Creator = styled(MyText)`
     color: ${({ theme }) => theme.colors.gray};
 `;
+const ButtonGroup = styled.View`
+    flex-direction: row;
+`;
 
 const CardButton = styled.TouchableOpacity`
-    width: 32px;
-    height: 32px;
+    padding: 10px;
     border-radius: 100px;
     justify-content: center;
     align-items: center;
-    background-color: ${({ theme }) => theme.colors.red};
+    background-color: ${({ theme, type }) => {
+        switch (type) {
+            case "danger":
+                return theme.colors.red;
+            case "secondary":
+                return theme.colors.blue;
+            case "neutral":
+                return "rgba(255, 255, 255, 0)";
+            default:
+                return theme.colors.lightBlue;
+        }
+    }};
+    margin-left: 16px;
 `;
 
 export default ListCard;

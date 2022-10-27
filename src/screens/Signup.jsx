@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Alert, Platform, View } from "react-native";
-import { Input } from "../styled/Input";
-import { supabase } from "../../supabaseClient";
+import { Alert, Platform } from "react-native";
+import { Input, Label, LabelWrapper } from "../styled/Input";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
 import {
     FormButton,
@@ -10,18 +9,25 @@ import {
     FormLink,
     FormText,
     FormTitle,
-    FormWrapper,
     InputGroup,
 } from "../styled/FormElements";
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "../components/Checkbox";
 import { signUp } from "../helpers/Auth";
+import {
+    LockClosedIcon,
+    EnvelopeIcon,
+    UserIcon,
+} from "react-native-heroicons/outline";
+import { useTheme } from "styled-components";
 
 const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
     const [name, setName] = useState("");
+
+    const theme = useTheme();
 
     const [showPassword, setShowPassword] = useState(null);
 
@@ -48,30 +54,58 @@ const Signup = () => {
                 keyboardVerticalOffset={keyboardVerticalOffset}
             >
                 <FormTitle>Sign Up</FormTitle>
+                <LabelWrapper>
+                    <EnvelopeIcon
+                        size={16}
+                        color={theme.colors.gray}
+                        style={{ marginTop: 2, marginRight: 6 }}
+                    />
+                    <Label>Email</Label>
+                </LabelWrapper>
                 <Input
                     keyboardType="email-address"
-                    placeholder="email"
                     value={email}
                     onChangeText={setEmail}
+                    autoCapitalize="none"
                 />
+                <LabelWrapper>
+                    <UserIcon
+                        size={16}
+                        color={theme.colors.gray}
+                        style={{ marginTop: 2, marginRight: 6 }}
+                    />
+                    <Label>Username</Label>
+                </LabelWrapper>
                 <Input
                     keyboardType="email-address"
-                    placeholder="username"
                     value={name}
                     onChangeText={setName}
                 />
-
+                <LabelWrapper>
+                    <LockClosedIcon
+                        size={16}
+                        color={theme.colors.gray}
+                        style={{ marginTop: 2, marginRight: 6 }}
+                    />
+                    <Label>Password</Label>
+                </LabelWrapper>
                 <Input
                     keyboardType="default"
                     secureTextEntry={!showPassword}
-                    placeholder="password"
                     value={password}
                     onChangeText={setPassword}
                 />
+                <LabelWrapper>
+                    <LockClosedIcon
+                        size={16}
+                        color={theme.colors.gray}
+                        style={{ marginTop: 2, marginRight: 6 }}
+                    />
+                    <Label>Confirm password</Label>
+                </LabelWrapper>
                 <Input
                     keyboardType="default"
                     secureTextEntry={!showPassword}
-                    placeholder="confirm password"
                     value={confirm}
                     onChangeText={setConfirm}
                 />

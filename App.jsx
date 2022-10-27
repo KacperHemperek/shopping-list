@@ -9,51 +9,55 @@ import Signup from "./src/screens/Signup";
 import { supabase } from "./supabaseClient";
 
 const theme = {
-    colors: {
-        darkBlue: "#2C3333",
-        blue: "#395B64",
-        lightBlue: "#A5C9CA",
-        text: "#E7F6F2",
-        gray: "#707c7c",
-        red: "#d32f2f",
-    },
+  colors: {
+    darkBlue: "#2C3333",
+    blue: "#395B64",
+    lightBlue: "#A5C9CA",
+    text: "#E7F6F2",
+    gray: "#707c7c",
+    red: "#d32f2f",
+    green: "#307351",
+    yellow: "#F4A259",
+    lightGreen: "#2BC016",
+    lightRed: "#F21B3F ",
+  },
 };
 
 const AppWrapper = ({ children }) => {
-    return (
-        <NavigationContainer>
-            <ThemeProvider theme={theme}>{children}</ThemeProvider>
-        </NavigationContainer>
-    );
+  return (
+    <NavigationContainer>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </NavigationContainer>
+  );
 };
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-    const [session, setSession] = useState(null);
-    useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-        });
+  const [session, setSession] = useState(null);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
 
-        supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-        });
-    }, []);
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
 
-    return (
-        <AppWrapper>
-            {session ? (
-                <Stack.Navigator screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="Home" component={Home} />
-                    <Stack.Screen name="List" component={List} />
-                </Stack.Navigator>
-            ) : (
-                <Stack.Navigator screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="LogIn" component={Login} />
-                    <Stack.Screen name="SignUp" component={Signup} />
-                </Stack.Navigator>
-            )}
-        </AppWrapper>
-    );
+  return (
+    <AppWrapper>
+      {session ? (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="List" component={List} />
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="LogIn" component={Login} />
+          <Stack.Screen name="SignUp" component={Signup} />
+        </Stack.Navigator>
+      )}
+    </AppWrapper>
+  );
 }
