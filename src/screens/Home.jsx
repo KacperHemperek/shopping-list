@@ -1,4 +1,4 @@
-import { FlatList, Modal, ScrollView, View } from "react-native";
+import { Modal, Platform, ScrollView, View } from "react-native";
 import React, { useState } from "react";
 import { ScreenWrapper } from "../styled/ScreenWrapper";
 import { MyText } from "../styled/MyText";
@@ -214,7 +214,7 @@ const Home = () => {
 
 const NotificationsContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.darkBlue};
-  top: 120px;
+  top: ${(props) => (Platform.OS === "android" ? 70 : 120)};
   right: 20px;
   position: absolute;
   width: 85%;
