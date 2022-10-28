@@ -1,12 +1,13 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ThemeProvider } from "styled-components";
+import CurrentUserProvider from "./src/components/CurrentUserProvider";
+import useCurrentUser from "./src/hooks/useCurrentUser";
 import Home from "./src/screens/Home";
 import List from "./src/screens/List";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
-import { supabase } from "./supabaseClient";
 
 const theme = {
   colors: {
@@ -23,41 +24,32 @@ const theme = {
   },
 };
 
-const AppWrapper = ({ children }) => {
-  return (
-    <NavigationContainer>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
-    </NavigationContainer>
+const AppContent = () => {
+  const currentUser = useCurrentUser();
+
+  return currentUser?.session ? (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="List" component={List} />
+    </Stack.Navigator>
+  ) : (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="LogIn" component={Login} />
+      <Stack.Screen name="SignUp" component={Signup} />
+    </Stack.Navigator>
   );
 };
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [session, setSession] = useState(null);
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
-
   return (
-    <AppWrapper>
-      {session ? (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="List" component={List} />
-        </Stack.Navigator>
-      ) : (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="LogIn" component={Login} />
-          <Stack.Screen name="SignUp" component={Signup} />
-        </Stack.Navigator>
-      )}
-    </AppWrapper>
+    <NavigationContainer>
+      <ThemeProvider theme={theme}>
+        <CurrentUserProvider>
+          <AppContent />
+        </CurrentUserProvider>
+      </ThemeProvider>
+    </NavigationContainer>
   );
 }
