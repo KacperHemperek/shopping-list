@@ -1,10 +1,14 @@
+import { Session, User } from "@supabase/supabase-js";
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
+import { UserContext as UserContextType } from "../interface/UserContext";
 
-export const UserContext = createContext({
+export const UserContext = createContext<UserContextType>({
   currentUser: null,
   session: null,
-  logout: () => {},
+  logOut: () => {},
+  logIn: () => {},
+  signUp: () => {},
 });
 
 type Props = {
@@ -12,8 +16,8 @@ type Props = {
 };
 
 const CurrentUserProvider = ({ children }: Props) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [session, setSession] = useState(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -48,7 +52,7 @@ const CurrentUserProvider = ({ children }: Props) => {
     }
   }, []);
 
-  const logIn = useCallback(async (email, password) => {
+  const logIn = useCallback(async (email: string, password: string) => {
     const loginError = new Error();
     loginError.name = "Log in failed";
     try {
@@ -69,41 +73,44 @@ const CurrentUserProvider = ({ children }: Props) => {
     }
   }, []);
 
-  async function signUp(email, password, confirm, name) {
-    const passwrodMatchError = new Error();
-    passwrodMatchError.name = "Sign up failed";
-    if (password !== confirm) {
-      passwrodMatchError.message = "Passwords must match";
-
-      throw passwrodMatchError;
-    }
-    try {
-      const cred = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { username: name } },
-      });
-
-      if (cred.error) {
-        console.error(cred.error);
-
-        passwrodMatchError.message = String(cred.error).replace(
-          "AuthApiError: ",
-          ""
-        );
+  const signUp = useCallback(
+    async (email: string, password: string, confirm: string, name: string) => {
+      const passwrodMatchError = new Error();
+      passwrodMatchError.name = "Sign up failed";
+      if (password !== confirm) {
+        passwrodMatchError.message = "Passwords must match";
 
         throw passwrodMatchError;
       }
-    } catch (error) {
-      console.error(error);
-      passwrodMatchError.message = error.message;
-      throw passwrodMatchError;
-    }
-  }
+      try {
+        const cred = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { username: name } },
+        });
+
+        if (cred.error) {
+          console.error(cred.error);
+
+          passwrodMatchError.message = String(cred.error).replace(
+            "AuthApiError: ",
+            ""
+          );
+
+          throw passwrodMatchError;
+        }
+      } catch (error) {
+        console.error(error);
+        passwrodMatchError.message = error.message;
+        throw passwrodMatchError;
+      }
+    },
+    []
+  );
   //combain all values/functions passed to context
-  const getContextValue = useCallback(() => {
+  const getContextValue = useCallback((): UserContextType => {
     return { currentUser, session, logOut, logIn, signUp };
-  }, [currentUser, session, logOut]);
+  }, [currentUser, session, logOut, logIn, signUp]);
 
   return (
     <UserContext.Provider value={getContextValue()}>
