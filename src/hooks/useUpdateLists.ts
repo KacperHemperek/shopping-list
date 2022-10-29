@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { supabase } from "../../supabaseClient";
-import useUser from "./useUser";
+import { useState } from 'react';
+import { supabase } from '../../supabaseClient';
+import useUser from './useUser';
 
 function useUpdateLists() {
   const { currentUser } = useUser();
   const [error, setError] = useState(null);
 
-  async function createList(name) {
+  async function createList(name: string) {
     try {
       const userId = currentUser.id;
       const { error: listError, data: listData } = await supabase
 
-        .from("lists")
+        .from('lists')
         .insert({
           created_by: userId,
           list_name: name,
@@ -19,7 +19,7 @@ function useUpdateLists() {
         .select();
 
       const { error: connectionError } = await supabase
-        .from("list_users")
+        .from('list_users')
         .insert({ user_id: userId, list_id: listData[0].id });
 
       if (listError) {
@@ -41,12 +41,12 @@ function useUpdateLists() {
   async function changeList(newName, id) {
     try {
       const { error: changeListError } = await supabase
-        .from("lists")
+        .from('lists')
         .update({ list_name: newName })
-        .eq("id", id);
+        .eq('id', id);
 
       if (changeListError) {
-        throw new Error(changeListError);
+        throw new Error(changeListError.message);
       }
     } catch (error) {
       console.error(error);
@@ -58,19 +58,19 @@ function useUpdateLists() {
     if (currentUser.id !== list.creator.id) return;
     try {
       const { error: deleteConnectionError } = await supabase
-        .from("list_users")
+        .from('list_users')
         .delete()
-        .eq("list_id", list.id);
+        .eq('list_id', list.id);
 
       const { error: deleteItemsError } = await supabase
-        .from("items")
+        .from('items')
         .delete()
-        .eq("list_id", list.id);
+        .eq('list_id', list.id);
 
       const { error: deleteListError } = await supabase
-        .from("lists")
+        .from('lists')
         .delete()
-        .eq("id", list.id);
+        .eq('id', list.id);
 
       if (deleteListError) {
         console.error(deleteListError);
@@ -82,7 +82,7 @@ function useUpdateLists() {
       }
       if (deleteItemsError) {
         console.error(deleteItemsError);
-        throw new Error(deleteItemsError.messsage);
+        throw new Error(deleteItemsError.message);
       }
     } catch (error) {
       console.error(error);

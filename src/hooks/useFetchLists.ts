@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../../supabaseClient";
-import useUser from "./useUser";
+import { PostgrestError } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
+import { supabase } from '../../supabaseClient';
+import { Database } from '../interface/Supabase';
+import { UserListItem } from '../interface/UserListItem';
+import useUser from './useUser';
 
 function useLists() {
   const { currentUser } = useUser();
 
-  const [userLists, setUserLists] = useState(null);
-  const [error, setError] = useState(null);
+  const [userLists, setUserLists] = useState<UserListItem[] | null>(null);
+  const [error, setError] = useState<PostgrestError>(null);
 
   async function fetchLists() {
     try {
       const { data, error: fetchError } = await supabase
-        .from("lists")
-        .select("list_name, id, profiles(*), list_users!inner(*)")
-        .eq("list_users.user_id", currentUser.id)
-        .order("created_at", { ascending: true });
+        .from('lists')
+        .select('list_name, id, profiles(*), list_users!inner(*)')
+        .eq('list_users.user_id', currentUser.id)
+        .order('created_at', { ascending: true });
 
       console.log(data.map((item) => item.profiles));
       setUserLists(
@@ -22,7 +25,8 @@ function useLists() {
           return {
             id: item.id,
             name: item.list_name,
-            creator: item.profiles,
+            creator:
+              item.profiles as Database['public']['Tables']['profiles']['Row'],
           };
         })
       );
@@ -44,8 +48,8 @@ function useLists() {
       supabase
         .channel(`public:list_users:user_id=eq.${currentUser.id}`)
         .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "list_users" },
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'list_users' },
           async (payload) => {
             /* for some reason public:list_user_id=eq.${userId} 
             does not work so this is a workaround */
@@ -54,10 +58,10 @@ function useLists() {
             }
             //make sure that new list is current user's with eq at the end
             const newList = await supabase
-              .from("lists")
-              .select("list_name, id, profiles!inner(username,id)")
-              .eq("id", payload.new.list_id)
-              .eq("profiles.id", currentUser.id);
+              .from('lists')
+              .select('list_name, id, profiles!inner(*)')
+              .eq('id', payload.new.list_id)
+              .eq('profiles.id', currentUser.id);
 
             const { id, list_name, profiles } = newList.data[0];
 
@@ -66,7 +70,8 @@ function useLists() {
               {
                 id,
                 name: list_name,
-                creator: profiles.username,
+                creator:
+                  profiles as Database['public']['Tables']['profiles']['Row'],
               },
             ]);
           }
@@ -74,10 +79,10 @@ function useLists() {
         .subscribe();
 
       supabase
-        .channel("public:lists")
+        .channel('public:lists')
         .on(
-          "postgres_changes",
-          { event: "UPDATE", schema: "public", table: "lists" },
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'lists' },
           async (payload) => {
             //should listen to all lists that has it's user_id so will react to changes
             //of not only user's lists but also lists that user is invited to
@@ -96,8 +101,8 @@ function useLists() {
           }
         )
         .on(
-          "postgres_changes",
-          { event: "DELETE", schema: "public", table: "lists" },
+          'postgres_changes',
+          { event: 'DELETE', schema: 'public', table: 'lists' },
           async (payload) => {
             //update lists when creator deletes list
             setUserLists((prevLists) =>

@@ -1,30 +1,31 @@
-import { Modal, Platform, ScrollView, View } from "react-native";
-import React, { useState } from "react";
-import { ScreenWrapper } from "../styled/ScreenWrapper";
-import { MyText } from "../styled/MyText";
-import styled, { useTheme } from "styled-components";
-import { SafeArea } from "../styled/SafeArea";
-import { Input, Label, LabelWrapper } from "../styled/Input";
-import { BellAlertIcon, PlusSmallIcon } from "react-native-heroicons/solid";
-import { Header, HeaderTitle } from "../styled/Header";
-import useLists from "../hooks/useFetchLists";
-import { ListWrapper } from "../styled/ListWrapper";
-import ListCard from "../components/ListCard";
-import LoadingScreen from "./LoadingScreen";
+import { Modal, Platform, ScrollView, View } from 'react-native';
+import React, { useState } from 'react';
+import { ScreenWrapper } from '../styled/ScreenWrapper';
+import { MyText } from '../styled/MyText';
+import styled, { useTheme } from 'styled-components/native';
+import { SafeArea } from '../styled/SafeArea';
+import { Input, Label, LabelWrapper } from '../styled/Input';
+import { BellAlertIcon, PlusSmallIcon } from 'react-native-heroicons/solid';
+import { Header, HeaderTitle } from '../styled/Header';
+import useLists from '../hooks/useFetchLists';
+import { ListWrapper } from '../styled/ListWrapper';
+import ListCard from '../components/ListCard';
+import LoadingScreen from './LoadingScreen';
 import {
   ArrowRightOnRectangleIcon,
   UsersIcon,
   TrashIcon,
-} from "react-native-heroicons/solid";
-import { FolderArrowDownIcon } from "react-native-heroicons/outline";
-import Popup from "../components/Popup";
-import useUpdateLists from "../hooks/useUpdateLists";
-import AddUser from "../components/AddUser";
-import { shadow } from "../helpers/Shadow";
-import Notification from "../components/Notification";
-import useUser from "../hooks/useUser";
+} from 'react-native-heroicons/solid';
+import { FolderArrowDownIcon } from 'react-native-heroicons/outline';
+import Popup from '../components/Popup';
+import useUpdateLists from '../hooks/useUpdateLists';
+import AddUser from '../components/AddUser';
+import { shadow } from '../helpers/Shadow';
+import Notification from '../components/Notification';
+import useUser from '../hooks/useUser';
+import { InviteState } from '../interface/InviteState';
 
-const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 0 : 0;
 
 const Home = () => {
   const { userLists, error } = useLists();
@@ -34,7 +35,7 @@ const Home = () => {
   const [listName, setListName] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
   const [currentEditList, setCurrentEditList] = useState(null);
-  const [editName, setEditName] = useState("");
+  const [editName, setEditName] = useState('');
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   function renderList() {
@@ -68,7 +69,7 @@ const Home = () => {
           <HeaderTitle>Your Lists</HeaderTitle>
           <ButtonWrapper>
             <NavButton
-              type={"neutral"}
+              type={'neutral'}
               onPress={() => {
                 setNotificationsOpen(true);
               }}
@@ -78,7 +79,7 @@ const Home = () => {
             >
               <BellAlertIcon size={24} color={theme.colors.text} />
             </NavButton>
-            <Modal transparent visible={notificationsOpen} animationType="fade">
+            <Modal transparent visible={notificationsOpen} animationType='fade'>
               <NotificationBackground
                 activeOpacity={1}
                 onPress={() => setNotificationsOpen(false)}
@@ -87,40 +88,12 @@ const Home = () => {
                   <ScrollView style={{ flex: 1 }}>
                     <View onStartShouldSetResponder={() => true}>
                       <Notification
-                        listName={"New List"}
-                        userName={"Kacper H"}
-                        state={"accepted"}
+                        listName={'New List'}
+                        userName={'Kacper H'}
+                        state={InviteState.accepted}
                         seen={true}
-                      />
-                      <Notification
-                        listName={"One more List"}
-                        userName={"Zygmunt"}
-                        state="pending"
-                        seen={false}
-                      />
-                      <Notification
-                        listName={"List with parents"}
-                        userName={"Kacper H"}
-                        state={"rejected"}
-                        seen={false}
-                      />
-                      <Notification
-                        listName={"New List"}
-                        userName={"Kacper H"}
-                        state={"pending"}
-                        seen={false}
-                      />
-                      <Notification
-                        listName={"New List"}
-                        userName={"Kacper H"}
-                        state={"pending"}
-                        seen={false}
-                      />
-                      <Notification
-                        listName={"New List"}
-                        userName={"Kacper H"}
-                        state={"pending"}
-                        seen={false}
+                        createdAt={new Date()}
+                        listId={'45ffe88f-7e48-4c26-a23a-0739bb01ec55'}
                       />
                     </View>
                   </ScrollView>
@@ -134,13 +107,13 @@ const Home = () => {
         </Header>
         <ListWrapper>{renderList()}</ListWrapper>
         <NewListWrapper
-          behavior={Platform.OS === "ios" ? "position" : null}
+          behavior={Platform.OS === 'ios' ? 'position' : null}
           keyboardVerticalOffset={keyboardVerticalOffset}
         >
           <InputWrapper>
             <NewListInput
               style={shadow}
-              placeholder="new list name"
+              placeholder='new list name'
               onChangeText={setListName}
               value={listName}
             />
@@ -148,10 +121,10 @@ const Home = () => {
               style={shadow}
               onPress={() => {
                 createList(listName);
-                setListName("");
+                setListName('');
               }}
             >
-              <PlusSmallIcon color="#E7F6F2" size={24} fontWeight={800} />
+              <PlusSmallIcon color='#E7F6F2' size={24} fontWeight={800} />
             </Button>
           </InputWrapper>
         </NewListWrapper>
@@ -186,7 +159,7 @@ const Home = () => {
           >
             <FolderArrowDownIcon
               style={{ marginRight: 6 }}
-              color="#E7F6F2"
+              color='#E7F6F2'
               size={20}
             />
 
@@ -201,9 +174,9 @@ const Home = () => {
                 console.error(error);
               }
             }}
-            type="delete"
+            type='delete'
           >
-            <TrashIcon style={{ marginRight: 6 }} color="#E7F6F2" size={20} />
+            <TrashIcon style={{ marginRight: 6 }} color='#E7F6F2' size={20} />
 
             <MyText>Delete</MyText>
           </SubmitButton>
@@ -215,7 +188,7 @@ const Home = () => {
 
 const NotificationsContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.darkBlue};
-  top: ${(props) => (Platform.OS === "android" ? "70px" : "120px")};
+  top: ${(props) => (Platform.OS === 'android' ? '70px' : '120px')};
   right: 20px;
   position: absolute;
   width: 85%;
@@ -248,22 +221,27 @@ const HeaderInput = styled.TextInput`
   width: 100%;
 `;
 
-const SubmitButton = styled.TouchableOpacity`
+const SubmitButton = styled.TouchableOpacity<{ type?: 'delete' }>`
   flex-direction: row;
   align-items: center;
   justify-content: center;
   background-color: ${(props) =>
-    props.type === "delete" ? props.theme.colors.red : props.theme.colors.blue};
+    props.type === 'delete' ? props.theme.colors.red : props.theme.colors.blue};
   padding: 8px;
   margin-right: 16px;
   border-radius: 4px;
   width: 90px;
 `;
 
-const NavButton = styled.TouchableOpacity`
+enum NavButtonType {
+  neutral = 'neutral',
+  transparent = 'transparent',
+}
+
+const NavButton = styled.TouchableOpacity<{ type: NavButtonType }>`
   padding: 8px;
   background-color: ${({ theme, type }) =>
-    type === "neutral" ? "transparent" : theme.colors.blue};
+    type === 'neutral' ? 'transparent' : theme.colors.blue};
   border-radius: 100px;
 `;
 

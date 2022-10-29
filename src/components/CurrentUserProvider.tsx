@@ -1,7 +1,7 @@
-import { Session, User } from "@supabase/supabase-js";
-import React, { createContext, useCallback, useEffect, useState } from "react";
-import { supabase } from "../../supabaseClient";
-import { UserContext as UserContextType } from "../interface/UserContext";
+import { Session, User } from '@supabase/supabase-js';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
+import { supabase } from '../../supabaseClient';
+import { UserContext as UserContextType } from '../interface/UserContext';
 
 export const UserContext = createContext<UserContextType>({
   currentUser: null,
@@ -54,7 +54,7 @@ const CurrentUserProvider = ({ children }: Props) => {
 
   const logIn = useCallback(async (email: string, password: string) => {
     const loginError = new Error();
-    loginError.name = "Log in failed";
+    loginError.name = 'Log in failed';
     try {
       const cred = await supabase.auth.signInWithPassword({
         email,
@@ -62,7 +62,7 @@ const CurrentUserProvider = ({ children }: Props) => {
       });
       if (cred.error) {
         console.error(cred.error);
-        loginError.message = String(cred.error).replace("AuthApiError: ", "");
+        loginError.message = String(cred.error).replace('AuthApiError: ', '');
 
         throw loginError;
       }
@@ -76,9 +76,9 @@ const CurrentUserProvider = ({ children }: Props) => {
   const signUp = useCallback(
     async (email: string, password: string, confirm: string, name: string) => {
       const passwrodMatchError = new Error();
-      passwrodMatchError.name = "Sign up failed";
+      passwrodMatchError.name = 'Sign up failed';
       if (password !== confirm) {
-        passwrodMatchError.message = "Passwords must match";
+        passwrodMatchError.message = 'Passwords must match';
 
         throw passwrodMatchError;
       }
@@ -93,8 +93,8 @@ const CurrentUserProvider = ({ children }: Props) => {
           console.error(cred.error);
 
           passwrodMatchError.message = String(cred.error).replace(
-            "AuthApiError: ",
-            ""
+            'AuthApiError: ',
+            ''
           );
 
           throw passwrodMatchError;

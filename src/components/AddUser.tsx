@@ -1,12 +1,12 @@
-import React, { useState, useTransition } from "react";
-import { Input } from "../styled/Input";
-import styled, { useTheme } from "styled-components/native";
-import { supabase } from "../../supabaseClient";
-import { MyText } from "../styled/MyText";
-import { UserPlusIcon } from "react-native-heroicons/solid";
+import React, { useState, useTransition } from 'react';
+import { Input } from '../styled/Input';
+import styled, { useTheme } from 'styled-components/native';
+import { supabase } from '../../supabaseClient';
+import { MyText } from '../styled/MyText';
+import { UserPlusIcon } from 'react-native-heroicons/solid';
 
 const AddUser = (list) => {
-  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserEmail, setNewUserEmail] = useState('');
   const [searchResults, setSearchResults] = useState(null);
   const [isPending, startTransition] = useTransition();
   const theme = useTheme();
@@ -19,9 +19,9 @@ const AddUser = (list) => {
     startTransition(() => {
       if (!e) return;
       supabase
-        .from("profiles")
-        .select("*")
-        .like("email", `%${e}%`)
+        .from('profiles')
+        .select('*')
+        .like('email', `%${e}%`)
         .limit(10)
         .then((data) => setSearchResults(data));
     });
@@ -47,7 +47,7 @@ const AddUser = (list) => {
   return (
     <AddUserWrapper>
       <Input
-        autoCapitalize="none"
+        autoCapitalize='none'
         value={newUserEmail}
         onChangeText={handleSearch}
       />

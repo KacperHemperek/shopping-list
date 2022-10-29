@@ -1,5 +1,5 @@
 import { Platform, StatusBar } from "react-native";
-import styled, { css } from "styled-components";
+import styled, { css } from "styled-components/native";
 
 export const SafeArea = styled.SafeAreaView`
     position: relative;

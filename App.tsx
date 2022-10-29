@@ -7,7 +7,7 @@ import CurrentUserProvider from "./src/components/CurrentUserProvider";
 import useUser from "./src/hooks/useUser";
 import Home from "./src/screens/Home";
 import List from "./src/screens/List";
-import Login from "./src/screens/Login";
+import Login from "./src/screens/Login.tsx";
 import Signup from "./src/screens/Signup";
 
 const theme: DefaultTheme = {

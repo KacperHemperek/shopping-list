@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Alert, Platform } from "react-native";
-import { Input, Label, LabelWrapper } from "../styled/Input";
-import { ScreenWrapper } from "../styled/ScreenWrapper";
+import React, { useState } from 'react';
+import { Alert, Platform } from 'react-native';
+import { Input, Label, LabelWrapper } from '../styled/Input';
+import { ScreenWrapper } from '../styled/ScreenWrapper';
 import {
   FormButton,
   FormButtonGroup,
@@ -10,23 +10,23 @@ import {
   FormText,
   FormTitle,
   InputGroup,
-} from "../styled/FormElements";
-import { useNavigation } from "@react-navigation/native";
-import Checkbox from "../components/Checkbox";
+} from '../styled/FormElements';
+import { useNavigation } from '@react-navigation/native';
+import Checkbox from '../components/Checkbox';
 import {
   LockClosedIcon,
   EnvelopeIcon,
   UserIcon,
-} from "react-native-heroicons/outline";
-import { useTheme } from "styled-components";
-import useUser from "../hooks/useUser";
+} from 'react-native-heroicons/outline';
+import { useTheme } from 'styled-components';
+import useUser from '../hooks/useUser';
 
 const Signup = () => {
   const { signUp } = useUser();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [name, setName] = useState('');
 
   const theme = useTheme();
 
@@ -38,17 +38,17 @@ const Signup = () => {
     try {
       await signUp(email, password, confirm, name);
     } catch (error) {
-      Alert.alert(error.name, error.message.replace("AuthApiError: ", ""));
-      setPassword("");
-      setConfirm("");
+      Alert.alert(error.name, error.message.replace('AuthApiError: ', ''));
+      setPassword('');
+      setConfirm('');
     }
   }
 
-  const keyboardVerticalOffset = Platform.OS === "ios" ? 20 : 0;
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 20 : 0;
   return (
     <ScreenWrapper verticalCenter horizontalCenter>
       <InputGroup
-        behavior={Platform.OS === "ios" ? "position" : ""}
+        behavior={Platform.OS === 'ios' ? 'position' : ''}
         keyboardVerticalOffset={keyboardVerticalOffset}
       >
         <FormTitle>Sign Up</FormTitle>
@@ -61,10 +61,10 @@ const Signup = () => {
           <Label>Email</Label>
         </LabelWrapper>
         <Input
-          keyboardType="email-address"
+          keyboardType='email-address'
           value={email}
           onChangeText={setEmail}
-          autoCapitalize="none"
+          autoCapitalize='none'
         />
         <LabelWrapper>
           <UserIcon
@@ -75,7 +75,7 @@ const Signup = () => {
           <Label>Username</Label>
         </LabelWrapper>
         <Input
-          keyboardType="email-address"
+          keyboardType='email-address'
           value={name}
           onChangeText={setName}
         />
@@ -88,7 +88,7 @@ const Signup = () => {
           <Label>Password</Label>
         </LabelWrapper>
         <Input
-          keyboardType="default"
+          keyboardType='default'
           secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
@@ -102,7 +102,7 @@ const Signup = () => {
           <Label>Confirm password</Label>
         </LabelWrapper>
         <Input
-          keyboardType="default"
+          keyboardType='default'
           secureTextEntry={!showPassword}
           value={confirm}
           onChangeText={setConfirm}
@@ -112,12 +112,12 @@ const Signup = () => {
           <Checkbox
             checked={showPassword}
             setChecked={() => setShowPassword((prev) => !prev)}
-            label="show password"
+            label='show password'
           />
         </FormCheckboxWrapper>
       </InputGroup>
       <FormButtonGroup>
-        <FormLink onPress={() => navigation.navigate("LogIn")}>
+        <FormLink onPress={() => navigation.navigate('LogIn' as never)}>
           Already have an account? Log in!
         </FormLink>
         <FormButton onPress={handleLogIn}>

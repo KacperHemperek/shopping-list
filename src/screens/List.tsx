@@ -1,16 +1,15 @@
-import React from "react";
-import { ScreenWrapper } from "../styled/ScreenWrapper";
-import styled, { useTheme } from "styled-components";
-import { SafeArea } from "../styled/SafeArea";
-import ListItem from "../components/ListItem";
-import { Input } from "../styled/Input";
-import { PlusSmallIcon, TrashIcon } from "react-native-heroicons/solid";
-import useItemList from "../hooks/useItemsList";
-import { Header, HeaderTitle } from "../styled/Header";
-import useUser from "../hooks/useUser";
-import BackButton from "../components/BackButton";
-import { ListWrapper } from "../styled/ListWrapper";
-import LoadingScreen from "./LoadingScreen";
+import React from 'react';
+import { ScreenWrapper } from '../styled/ScreenWrapper';
+import styled, { useTheme } from 'styled-components/native';
+import { SafeArea } from '../styled/SafeArea';
+import ListItem from '../components/ListItem';
+import { Input } from '../styled/Input';
+import { PlusSmallIcon, TrashIcon } from 'react-native-heroicons/solid';
+import useItemList from '../hooks/useItemsList';
+import { Header, HeaderTitle } from '../styled/Header';
+import BackButton from '../components/BackButton';
+import { ListWrapper } from '../styled/ListWrapper';
+import LoadingScreen from './LoadingScreen';
 
 const List = ({ route }) => {
   const { listId } = route.params;
@@ -54,14 +53,14 @@ const List = ({ route }) => {
         </Header>
         <InputWrapper>
           <CustomInput
-            placeholder="e.g. ham, cheese, milk"
+            placeholder='e.g. ham, cheese, milk'
             onChangeText={setDesc}
             value={desc}
           />
         </InputWrapper>
         <InputWrapper>
           <CustomInput
-            placeholder="e.g. 100g, 2pc, 250ml"
+            placeholder='e.g. 100g, 2pc, 250ml'
             onChangeText={setAmount}
             value={amount}
           />

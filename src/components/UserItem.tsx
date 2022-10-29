@@ -1,6 +1,6 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { InviteState } from "../interface/InviteState";
+import { View, Text } from 'react-native';
+import React from 'react';
+import { InviteState } from '../interface/InviteState';
 
 interface UserItemType {
   name: string;
@@ -11,7 +11,7 @@ interface UserItemType {
 const UserItem = ({ name, email, status }: UserItemType) => {
   return (
     <View>
-      <Text>UserItem</Text>
+      <Text>{name}</Text>
     </View>
   );
 };

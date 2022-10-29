@@ -1,6 +1,6 @@
-import { Modal } from "react-native";
-import React from "react";
-import styled from "styled-components/native";
+import { Modal } from 'react-native';
+import React from 'react';
+import styled from 'styled-components/native';
 
 export interface PopupProps {
   children?: React.ReactNode;
@@ -13,7 +13,7 @@ const Popup = ({ children, showModal, hideModal }: PopupProps) => {
     <Modal
       onRequestClose={hideModal}
       transparent={true}
-      animationType="fade"
+      animationType='fade'
       visible={showModal}
     >
       <PopupWraper onPress={hideModal} activeOpacity={1}>
