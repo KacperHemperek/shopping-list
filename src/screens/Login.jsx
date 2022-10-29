@@ -16,12 +16,12 @@ import { ScreenWrapper } from "../styled/ScreenWrapper";
 
 import { EnvelopeIcon, LockClosedIcon } from "react-native-heroicons/outline";
 import { useTheme } from "styled-components";
-import useCurrentUser from "../hooks/useCurrentUser";
+import useUser from "../hooks/useUser";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 40 : 0;
 
 const Login = () => {
-  const { logIn } = useCurrentUser();
+  const { logIn } = useUser();
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);

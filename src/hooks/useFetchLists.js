@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import useCurrentUser from "./useCurrentUser";
+import useUser from "./useUser";
 
 function useLists() {
-  const { currentUser } = useCurrentUser();
+  const { currentUser } = useUser();
 
   const [userLists, setUserLists] = useState(null);
   const [error, setError] = useState(null);

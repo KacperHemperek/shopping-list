@@ -19,10 +19,10 @@ import {
   UserIcon,
 } from "react-native-heroicons/outline";
 import { useTheme } from "styled-components";
-import useCurrentUser from "../hooks/useCurrentUser";
+import useUser from "../hooks/useUser";
 
 const Signup = () => {
-  const { signUp } = useCurrentUser();
+  const { signUp } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");

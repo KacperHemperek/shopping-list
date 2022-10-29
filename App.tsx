@@ -2,14 +2,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { ThemeProvider } from "styled-components";
+import { DefaultTheme } from "styled-components/native";
 import CurrentUserProvider from "./src/components/CurrentUserProvider";
-import useCurrentUser from "./src/hooks/useCurrentUser";
+import useUser from "./src/hooks/useUser";
 import Home from "./src/screens/Home";
 import List from "./src/screens/List";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 
-const theme = {
+const theme: DefaultTheme = {
   colors: {
     darkBlue: "#2C3333",
     blue: "#395B64",
@@ -23,9 +24,10 @@ const theme = {
     lightRed: "#F21B3F ",
   },
 };
+const Stack = createNativeStackNavigator();
 
 const AppContent = () => {
-  const currentUser = useCurrentUser();
+  const currentUser = useUser();
 
   return currentUser?.session ? (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -39,8 +41,6 @@ const AppContent = () => {
     </Stack.Navigator>
   );
 };
-
-const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (

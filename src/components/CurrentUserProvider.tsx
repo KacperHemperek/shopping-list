@@ -7,7 +7,11 @@ export const UserContext = createContext({
   logout: () => {},
 });
 
-const CurrentUserProvider = ({ children }) => {
+type Props = {
+  children?: React.ReactNode;
+};
+
+const CurrentUserProvider = ({ children }: Props) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [session, setSession] = useState(null);
 
@@ -36,7 +40,7 @@ const CurrentUserProvider = ({ children }) => {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.message);
       }
     } catch (error) {
       console.error(error);

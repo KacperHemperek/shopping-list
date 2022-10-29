@@ -22,13 +22,13 @@ import useUpdateLists from "../hooks/useUpdateLists";
 import AddUser from "../components/AddUser";
 import { shadow } from "../helpers/Shadow";
 import Notification from "../components/Notification";
-import useCurrentUser from "../hooks/useCurrentUser";
+import useUser from "../hooks/useUser";
 
 const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
 const Home = () => {
   const { userLists, error } = useLists();
-  const { logOut, currentUser } = useCurrentUser();
+  const { logOut, currentUser } = useUser();
   const { createList, changeList, deleteList } = useUpdateLists();
   const theme = useTheme();
   const [listName, setListName] = useState(null);
@@ -158,17 +158,18 @@ const Home = () => {
       </SafeArea>
       <Popup showModal={showEdit} hideModal={() => setShowEdit(false)}>
         <HeaderInput value={editName} onChangeText={setEditName} />
-        <LabelWrapper>
-          <UsersIcon
-            size={16}
-            color={theme.colors.gray}
-            style={{ marginTop: 1, marginRight: 4 }}
-          />
-          <Label>Add new users</Label>
-        </LabelWrapper>
-
-        {currentEditList.creator === currentUser.id && (
-          <AddUser list={currentEditList} />
+        {currentEditList?.creator.id === currentUser?.id && (
+          <>
+            <LabelWrapper>
+              <UsersIcon
+                size={16}
+                color={theme.colors.gray}
+                style={{ marginTop: 1, marginRight: 4 }}
+              />
+              <Label>Add new users</Label>
+            </LabelWrapper>
+            <AddUser list={currentEditList} />
+          </>
         )}
         <ListWrapper></ListWrapper>
 
@@ -214,7 +215,7 @@ const Home = () => {
 
 const NotificationsContainer = styled.View`
   background-color: ${({ theme }) => theme.colors.darkBlue};
-  top: ${(props) => (Platform.OS === "android" ? 70 : 120)};
+  top: ${(props) => (Platform.OS === "android" ? "70px" : "120px")};
   right: 20px;
   position: absolute;
   width: 85%;

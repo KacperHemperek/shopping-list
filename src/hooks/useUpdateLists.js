@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { supabase } from "../../supabaseClient";
-import useCurrentUser from "./useCurrentUser";
+import useUser from "./useUser";
 
 function useUpdateLists() {
-  const { currentUser } = useCurrentUser();
+  const { currentUser } = useUser();
   const [error, setError] = useState(null);
 
   async function createList(name) {
