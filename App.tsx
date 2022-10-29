@@ -24,6 +24,7 @@ const theme: DefaultTheme = {
     lightRed: "#F21B3F ",
   },
 };
+
 const Stack = createNativeStackNavigator();
 
 const AppContent = () => {

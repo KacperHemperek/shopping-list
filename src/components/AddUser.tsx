@@ -1,6 +1,6 @@
 import React, { useState, useTransition } from "react";
 import { Input } from "../styled/Input";
-import styled, { useTheme } from "styled-components";
+import styled, { useTheme } from "styled-components/native";
 import { supabase } from "../../supabaseClient";
 import { MyText } from "../styled/MyText";
 import { UserPlusIcon } from "react-native-heroicons/solid";
@@ -16,23 +16,14 @@ const AddUser = (list) => {
     if (!e) {
       setSearchResults(null);
     }
-    startTransition(async () => {
+    startTransition(() => {
       if (!e) return;
-      try {
-        const { data, error: searchError } = await supabase
-          .from("profiles")
-          .select("*")
-          .like("email", `%${e}%`)
-          .limit(10);
-
-        setSearchResults(data);
-
-        if (searchError) {
-          console.error(searchError);
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      supabase
+        .from("profiles")
+        .select("*")
+        .like("email", `%${e}%`)
+        .limit(10)
+        .then((data) => setSearchResults(data));
     });
   }
 

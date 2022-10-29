@@ -1,8 +1,14 @@
 import { Modal } from "react-native";
 import React from "react";
-import styled from "styled-components";
+import styled from "styled-components/native";
 
-const Popup = ({ children, showModal, hideModal }) => {
+export interface PopupProps {
+  children?: React.ReactNode;
+  showModal?: boolean;
+  hideModal: () => void;
+}
+
+const Popup = ({ children, showModal, hideModal }: PopupProps) => {
   return (
     <Modal
       onRequestClose={hideModal}

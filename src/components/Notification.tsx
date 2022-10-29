@@ -1,6 +1,6 @@
 import React from "react";
 import { MyText } from "../styled/MyText";
-import styled, { useTheme } from "styled-components";
+import styled, { useTheme } from "styled-components/native";
 import {
   CheckCircleIcon,
   UserPlusIcon,
@@ -8,6 +8,16 @@ import {
 } from "react-native-heroicons/solid";
 import { shadow } from "../helpers/Shadow";
 import { Dot } from "../styled/Dot";
+import { InviteState } from "../interface/InviteState";
+
+type NotificationProps = {
+  listName: string;
+  listId: string;
+  createdAt: Date;
+  state: InviteState;
+  userName: string;
+  seen: boolean;
+};
 
 const Notification = ({
   listName,
@@ -16,11 +26,11 @@ const Notification = ({
   state,
   userName,
   seen,
-}) => {
+}: NotificationProps) => {
   const theme = useTheme();
 
-  const TagType = (type) => {
-    return type === "accepted"
+  const TagType = (type: InviteState) => {
+    return type === InviteState.accepted
       ? theme.colors.lightGreen
       : theme.colors.lightRed;
   };
@@ -68,7 +78,7 @@ const Row = styled.View`
   flex-direction: row;
 `;
 
-const Tag = styled.View`
+const Tag = styled.View<{ color: string }>`
   border: 2px solid ${({ color }) => color};
   border-radius: 6px;
 
@@ -85,7 +95,7 @@ const TagText = styled(MyText)`
   text-transform: capitalize;
 `;
 
-const Button = styled.TouchableOpacity`
+const Button = styled.TouchableOpacity<{ type: "accept" | "redject" }>`
   border-radius: 8px;
   background-color: ${({ theme, type }) =>
     type === "accept" ? theme.colors.green : theme.colors.red};
