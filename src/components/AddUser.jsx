@@ -5,7 +5,7 @@ import { supabase } from "../../supabaseClient";
 import { MyText } from "../styled/MyText";
 import { UserPlusIcon } from "react-native-heroicons/solid";
 
-const AddUser = (listId) => {
+const AddUser = (list) => {
   const [newUserEmail, setNewUserEmail] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [isPending, startTransition] = useTransition();
@@ -41,9 +41,9 @@ const AddUser = (listId) => {
   }
 
   function renderSugestedUsers() {
-    return searchResults?.map((result) => (
-      <UserItem key={result.id}>
-        <MyText>{result.email}</MyText>
+    return searchResults?.map((user) => (
+      <UserItem onPress={inviteUser} key={user.id}>
+        <MyText>{user.email}</MyText>
         <UserPlusIcon
           color={theme.colors.text}
           size={20}

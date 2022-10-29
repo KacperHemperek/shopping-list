@@ -10,7 +10,7 @@ export const UserContext = createContext({
 const CurrentUserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [session, setSession] = useState(null);
-  // TODO fix session null is not and object
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -64,9 +64,41 @@ const CurrentUserProvider = ({ children }) => {
       throw loginError;
     }
   }, []);
+
+  async function signUp(email, password, confirm, name) {
+    const passwrodMatchError = new Error();
+    passwrodMatchError.name = "Sign up failed";
+    if (password !== confirm) {
+      passwrodMatchError.message = "Passwords must match";
+
+      throw passwrodMatchError;
+    }
+    try {
+      const cred = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { username: name } },
+      });
+
+      if (cred.error) {
+        console.error(cred.error);
+
+        passwrodMatchError.message = String(cred.error).replace(
+          "AuthApiError: ",
+          ""
+        );
+
+        throw passwrodMatchError;
+      }
+    } catch (error) {
+      console.error(error);
+      passwrodMatchError.message = error.message;
+      throw passwrodMatchError;
+    }
+  }
   //combain all values/functions passed to context
   const getContextValue = useCallback(() => {
-    return { currentUser, session, logOut, logIn };
+    return { currentUser, session, logOut, logIn, signUp };
   }, [currentUser, session, logOut]);
 
   return (

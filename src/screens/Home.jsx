@@ -28,14 +28,13 @@ const keyboardVerticalOffset = Platform.OS === "ios" ? 0 : 0;
 
 const Home = () => {
   const { userLists, error } = useLists();
-  const { logOut } = useCurrentUser();
+  const { logOut, currentUser } = useCurrentUser();
   const { createList, changeList, deleteList } = useUpdateLists();
   const theme = useTheme();
   const [listName, setListName] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
   const [currentEditList, setCurrentEditList] = useState(null);
   const [editName, setEditName] = useState("");
-  const [newUserEmail, setNewUserEmail] = useState("");
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   function renderList() {
@@ -50,7 +49,6 @@ const Home = () => {
             onEdit={() => {
               setCurrentEditList(item);
               setEditName(item.name);
-              setNewUserEmail("");
               setShowEdit(true);
             }}
           />
@@ -169,7 +167,9 @@ const Home = () => {
           <Label>Add new users</Label>
         </LabelWrapper>
 
-        <AddUser listId={currentEditList} />
+        {currentEditList.creator === currentUser.id && (
+          <AddUser list={currentEditList} />
+        )}
         <ListWrapper></ListWrapper>
 
         <ButtonWrapper>
